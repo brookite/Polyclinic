@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <!-- Basic -->
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <!-- Mobile Metas -->
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+  <!-- Site Metas -->
+  <meta name="keywords" content="" />
+  <meta name="description" content="" />
+  <meta name="author" content="" />
+
+  <title>Поликлиника</title>
+
+  <link rel="stylesheet" type="text/css"
+    href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.1.3/assets/owl.carousel.min.css" />
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link rel="stylesheet" type="text/css" href="css/bootstrap.css" />
+
+  <link href="https://fonts.googleapis.com/css?family=Poppins:400,600,700|Roboto:400,700&display=swap" rel="stylesheet">
+  <link href="css/style.css" rel="stylesheet" />
+  <link href="css/responsive.css" rel="stylesheet" />
+  <link href="css/extended.css" rel="stylesheet" />
+</head>
+
+<body>
+  <div class="hero_area {% if request.path == '/' %} hero_area_expanded {% endif %}" >
+    <!-- header section strats -->
+    <header class="header_section">
+      <div class="container-fluid">
+        <nav class="navbar navbar-expand-lg custom_nav-container pt-3">
+          <a class="navbar-brand" href="/">
+            <img src="images/logo.png" alt="">
+            <span>
+              Поликлиника
+            </span>
+          </a>
+          <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+
+          <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <div class="d-flex  flex-column flex-lg-row align-items-center w-100 justify-content-between">
+              <ul class="navbar-nav  ">
+                <li class="nav-item active">
+                  <a class="nav-link" href="/">Главная <span class="sr-only">(текущая)</span></a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="/about"> О нас </a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="/doctors"> Врачи </a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="/appointment"> Запись </a>
+                </li>
+              </ul>
+              <div class="login_btn-contanier ml-0 ml-lg-5">
+                <a href="/login">
+                  <img src="images/user.png" alt="">
+                  <span>
+                    Войти в личный кабинет
+                  </span>
+                </a>
+              </div>
+            </div>
+          </div>
+
+        </nav>
+      </div>
+    </header>
+    <!-- end header section -->
+    {% block herobody %}{% endblock %}
+  </div>
+    {% block pagebody %}{% endblock %}
+
+  <!-- info section -->
+  <section class="info_section layout_padding2">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-3">
+          <div class="info_contact">
+            <h4>
+              Контакты
+            </h4>
+            <div class="box">
+              <div class="img-box">
+                <img src="images/telephone-symbol-button.png" alt="">
+              </div>
+              <div class="detail-box">
+                <h6>
+                  +01 123567894
+                </h6>
+              </div>
+            </div>
+            <div class="box">
+              <div class="img-box">
+                <img src="images/email.png" alt="">
+              </div>
+              <div class="detail-box">
+                <h6>
+                  polyclinic@example.com
+                </h6>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="info_menu">
+            <h4>
+              Меню
+            </h4>
+            <ul class="navbar-nav  ">
+              <li class="nav-item active">
+                <a class="nav-link" href="/">Главная <span class="sr-only">(текущая)</span></a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="/about"> О нас </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="/doctors"> Врачи </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="/appointment"> Запись на приём </a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- end info section -->
+
+  <!-- footer section -->
+  <section class="container-fluid footer_section">
+    <p>
+      Дизайн: 
+      <a href="https://html.design/">Free Html Templates</a>
+    </p>
+    <p>2023</p>
+  </section>
+  <!-- footer section -->
+
+  <script type="text/javascript" src="js/jquery-3.4.1.min.js"></script>
+  <script type="text/javascript" src="js/bootstrap.js"></script>
+  <script type="text/javascript" src="js/api.js"></script>
+  <script type="text/javascript" src="js/main.js"></script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.2.1/owl.carousel.min.js">
+  </script>
+  {% block pagebodyscripts %}{% endblock %}
+</body>
+
+</html>

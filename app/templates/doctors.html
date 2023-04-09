@@ -1,0 +1,42 @@
+{% extends 'main.html' %}
+
+{% block pagebody %}
+<section class="health_section layout_padding">
+    <div class="health_carousel-container">
+      <h2 class="text-uppercase">
+        Наши доктора
+      </h2>
+    <div class="doctors_section">
+      <div class="box">
+        <div class="btn_container">
+          <a href="/appointment">
+            Записаться
+          </a>
+        </div>
+        <div class="img-box">
+          <img src="images/p-6.jpg" alt="">
+        </div>
+        <div class="name-box">
+          <div class="text doctor_name">
+            <h5>
+              Доктор
+            </h5>
+          </div>
+          <div class="text specialization">
+            <h6>
+              специальность
+            </h6>
+          </div>
+        </div>
+      </div>
+    </div>
+</section>
+
+<!-- end health section -->
+{% endblock %}
+
+{% block pagebodyscripts %}
+<script>
+// здесь будет загрузка всех врачей
+</script>
+{% endblock %}
