@@ -1,5 +1,6 @@
 .doctors_section {
     display: flex;
+    flex-wrap: wrap;
 }
 
 .name-box {

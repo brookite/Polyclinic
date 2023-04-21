@@ -37,6 +37,18 @@
 
 {% block pagebodyscripts %}
 <script>
-// здесь будет загрузка всех врачей
+let doctors = fetch("get_doctors", {}, function(data) {
+    let element = document.querySelector(".box").cloneNode(true);
+    document.querySelector(".doctors_section").textContent = "";
+    for (let i = 0; i < data.length; i++) {
+        let doctor = element.cloneNode(true);
+        doctor.querySelector(".doctor_name > h5").innerText = data[i]["fio"];
+        doctor.querySelector(".specialization > h6").innerText = data[i]["specialization"];
+        document.querySelector(".doctors_section").appendChild(doctor);
+    }
+}, function() {
+  document.querySelector(".doctors_section").textContent = "";
+  console.error("Error while loading doctors");
+});
 </script>
 {% endblock %}
