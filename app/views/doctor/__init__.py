@@ -3,7 +3,7 @@ from flask import Blueprint, render_template
 view = Blueprint('doctor', __name__, url_prefix ='/doctor')
 
 
-@view.route("/doctorlk")
+@view.route("/lk")
 def stats():
     return render_template("admin.html")
 

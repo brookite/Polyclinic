@@ -2,6 +2,7 @@ from app.db.connection import connect_db, close_db
 from werkzeug.security import generate_password_hash, check_password_hash
 from typing import Dict
 from app.utils.enums import Role
+from psycopg2.extensions import AsIs
 
 
 def get_user(username, cursor=None):
@@ -32,11 +33,11 @@ def register_user(username, password, roles: Dict[Role, int]):
 
     hashed_password = generate_password_hash(password)
 
-    if not get_user(username, cursor):
+    if get_user(username, cursor):
         close_db(conn, cursor)
         return False
 
-    cursor.commit(
+    cursor.execute(
     """
     INSERT INTO users (username, password)
     VALUES (%s,%s);
@@ -51,11 +52,13 @@ def register_user(username, password, roles: Dict[Role, int]):
             field = "doctor_id"
         else:
             raise TypeError(f"Invalid role {role}")
-        cursor.commit(
+        cursor.execute(
         """
         UPDATE users SET %s=%s WHERE username=%s;
-        """, (field, roles[role], username))
+        """, (AsIs(field), roles[role], username))
+    conn.commit()
     close_db(conn, cursor)
+    return True
 
 
 def register_patient(data: Dict):
@@ -63,17 +66,19 @@ def register_patient(data: Dict):
     password = data["password"]
     
     conn, cursor = connect_db()
-    fio = " ".join(data["last_name"], data["first_name"], data["middle_name"])
-    cursor.commit(
+    fio = " ".join([data["last_name"], data["first_name"], data["middle_name"]])
+    cursor.execute(
     """INSERT INTO patients(fio, gender, address, phone_number, birthday, passport_data)
     VALUES (%s, %s, %s, %s, %s, %s)
-    """, fio, data["gender"], data["address"], data["phone_number"], 
-        data["birthday"], data["passport_data"])
-    patient_id = cursor.fetchone(
+    """, (fio, data["gender"], data["address"], data["phone_number"], 
+        data["birthday"], data["passport_data"]))
+    conn.commit()
+    cursor.execute(
     """
     SELECT currval(pg_get_serial_sequence('patients','id'))
     """
     )
+    patient_id = cursor.fetchone()[0]
     close_db(conn, cursor)
     result = register_user(username, password, {Role.PATIENT: patient_id})
     return result

@@ -80,6 +80,9 @@
 var specializations = new Set();
 var doctors_data = [];
 
+var workshift_id = undefined;
+var selectedDoctor = undefined;
+
 function specSelected() {
     let specBox = document.getElementById("specBox");
     let spec = specBox.options[specBox.selectedIndex].value;
