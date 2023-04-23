@@ -1,8 +1,10 @@
 from flask import Flask
+import os
 
 
 def create_app():
     app = Flask(__name__, static_url_path="/")
+    app.config["SECRET_KEY"] = os.getenv("SECRET_KEY")
 
     import app.views.main as main
     import app.views.admin as admin

@@ -42,6 +42,7 @@ let doctors = fetch("get_doctors", {}, function(data) {
     document.querySelector(".doctors_section").textContent = "";
     for (let i = 0; i < data.length; i++) {
         let doctor = element.cloneNode(true);
+        doctor.querySelector("a").attributes.href.textContent = `/appointment?doctor_id=${data[i]["id"]}`;
         doctor.querySelector(".doctor_name > h5").innerText = data[i]["fio"];
         doctor.querySelector(".specialization > h6").innerText = data[i]["specialization"];
         document.querySelector(".doctors_section").appendChild(doctor);

@@ -12,8 +12,8 @@ def get_user(username, cursor=None):
         conn, cursor_ = connect_db()
     else:
         cursor_ = cursor
-    cursor_.execute('SELECT * FROM users WHERE username = %s', (username))
-    account = cursor.fetchone()
+    cursor_.execute('SELECT * FROM users WHERE username=%s', (username,))
+    account = cursor_.fetchone()
     if cursor is None:
         close_db(conn, cursor_)
     return account
@@ -25,6 +25,7 @@ def login_user(username, password):
         account_password = account["password"]
         if check_password_hash(account_password, password):
             return account
+
 
 def register_user(username, password, roles: Dict[Role, int]):
     conn, cursor = connect_db()
@@ -82,7 +83,7 @@ def remove_user(username):
     conn, cursor = connect_db()
     result = False
     if get_user(username, cursor):
-        cursor.commit("DELETE FROM users WHERE username=%s", (username))
+        cursor.commit("DELETE FROM users WHERE username=%s", (username,))
         result = True
     close_db(conn, cursor)
     return result

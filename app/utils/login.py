@@ -1,19 +1,20 @@
 from flask import session, url_for, redirect, abort
 from app.db.authorization import Role, get_user, get_roles
 from typing import List
-
+from functools import wraps
 
 
 def get_logged_in():
-    if session['loggedin']:
+    if session.get('loggedin'):
         return session["username"]
 
 
 def login_required(function):
+    @wraps(function)
     def wrapper(*args, **kwargs):
         user = get_user(get_logged_in())
         if not user:
-            return redirect(url_for('login'))
+            return redirect(url_for('main.login'))
         else:
             return function(*args, **kwargs)
     
@@ -21,12 +22,15 @@ def login_required(function):
 
 
 def role_required(roles: List[Role]):
-    def wrapper(*args, **kwargs):
-        user_roles = set(get_roles(get_logged_in()).keys())
-        if not len(set(roles).intersection(user_roles)):
-            return "Access denied for your role", 403
-        else:
-            return function(*args, **kwargs)
+    def role_wrapper(function):
+        @wraps(function)
+        def wrapper(*args, **kwargs):
+            user_roles = set(get_roles(get_logged_in()).keys())
+            if not len(set(roles).intersection(user_roles)):
+                return "Доступ к данной странице запрещен для этой роли пользователя", 403
+            else:
+                return function(*args, **kwargs)
+        return wrapper
     
-    return wrapper
+    return role_wrapper
         

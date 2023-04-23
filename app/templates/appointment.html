@@ -19,50 +19,42 @@
           <form>
             <div class="form-group">
               <label for="exampleInputName1">Имя</label>
-              <div class="form-control" id="exampleInputName1">Name</div>
+              <div class="form-control" id="exampleInputName1">{{ patient_name }}</div>
             </div>
             <div class="form-group">
               <label for="exampleInputNumber1">Контактный номер телефона</label>
-              <div class="form-control" id="exampleInputNumber1">Number</div>
+              <div class="form-control" id="exampleInputNumber1"> {{ patient_phone }}</div>
             </div>
 
             <div class="form-group ">
               <label for="inputState">Специальность врача</label>
-              <select id="inputState" class="form-control">
-                <option selected>1</option>
-                <option>2</option>
-                <option>3</option>
+              <select id="specBox" onchange="specSelected();" class="form-control">
+                
               </select>
             </div>
 
             <div class="form-group ">
               <label for="inputState">Врач</label>
-              <select id="inputState" class="form-control">
-                <option selected>1</option>
-                <option>2</option>
-                <option>3</option>
+              <select id="doctorBox" onchange="doctorSelected();" class="form-control">
+                
               </select>
             </div>
 
             <div class="form-group ">
               <label for="inputState">Дата</label>
-              <select id="inputState" class="form-control">
-                <option selected>1</option>
-                <option>2</option>
-                <option>3</option>
+              <select id="dateBox" onchange="dateSelected();" class="form-control">
+                
               </select>
             </div>
 
             <div class="form-group ">
               <label for="inputState">Время</label>
-              <select id="inputState" class="form-control">
-                <option selected>1</option>
-                <option>2</option>
-                <option>3</option>
+              <select id="timeBox" class="form-control">
+                
               </select>
             </div>
 
-            <button type="submit" class="">Записаться</button>
+            <button type="submit" class="submit_appointment">Записаться</button>
           </form>
         </div>
       </div>
@@ -83,3 +75,45 @@
 {% endblock %}
   
 
+{% block pagebodyscripts %}
+<script>
+var specializations = new Set();
+var doctors_data = [];
+
+function specSelected() {
+    let specBox = document.getElementById("specBox");
+    let spec = specBox.options[specBox.selectedIndex].value;
+    fetch("get_doctors_by_spec", {"specialization": spec}, function(data) {
+      let doctorBox = document.getElementById("doctorBox");
+      doctorBox.innerHTML = '';
+      for (let i = 0; i < data.length; i++) {
+          var opt = document.createElement('option');
+          opt.innerHTML = data[i]["fio"];
+          opt.value = data[i]["fio"];
+          doctorBox.appendChild(opt);
+      }
+    }, function() {
+      console.error("Error while loading doctors specializations");
+    });
+}
+
+fetch("get_doctors", {}, function(data) {
+    doctors_data = data;
+    for (let i = 0; i < data.length; i++) {
+        specializations.add(data[i]["specialization"]);
+    }
+    let specBox = document.getElementById("specBox");
+    for (let item of specializations) {
+          var opt = document.createElement('option');
+          opt.innerHTML = item;
+          opt.value = item;
+          specBox.appendChild(opt);
+    }
+    specSelected();
+}, function() {
+  console.error("Error while loading doctors");
+});
+
+
+</script>
+{% endblock %}

@@ -33,15 +33,15 @@ ALTER TABLE IF EXISTS public.users
 
 INSERT INTO users (username, password, patient_id, employee_id, doctor_id)
 VALUES ('admin',
-'pbkdf2:sha256:260000$AgE33rU87ikmlpAr$abcf35babeff59ab215d52828af20151537a97806242a8bcaea1b7c6c53196221',
+'pbkdf2:sha256:260000$NNL1tHWlNCeb89OJ$4f25df9c9ea22e12739cc59a2de2cb7e5dfc190e9276a80313b2fd0f7849e18f',
 1, 1, 1);
 
 INSERT INTO users (username, password, patient_id, employee_id, doctor_id)
 VALUES ('patient',
-'pbkdf2:sha256:260000$AgE33rU87ikmlpAr$abcf35babeff59ab215d52828af20151537a97806242a8bcaea1b7c6c53196221',
+'pbkdf2:sha256:260000$NNL1tHWlNCeb89OJ$4f25df9c9ea22e12739cc59a2de2cb7e5dfc190e9276a80313b2fd0f7849e18f',
 2, NULL, NULL);
 
 INSERT INTO users (username, password, patient_id, employee_id, doctor_id)
 VALUES ('doctor',
-'pbkdf2:sha256:260000$AgE33rU87ikmlpAr$abcf35babeff59ab215d52828af20151537a97806242a8bcaea1b7c6c53196221',
+'pbkdf2:sha256:260000$NNL1tHWlNCeb89OJ$4f25df9c9ea22e12739cc59a2de2cb7e5dfc190e9276a80313b2fd0f7849e18f',
 NULL, NULL, 3);

@@ -1,5 +1,12 @@
 {% extends 'main.html' %}
 
 {% block pagebody %}
-
+<form method="POST">
+    {{ form.hidden_tag() }}
+    {{ form.login.label }} {{ form.login() }}
+    <br>
+    {{ form.password.label }} {{ form.password() }}
+    <br>
+    {{ form.submit() }}
+</form>
 {% endblock %}
