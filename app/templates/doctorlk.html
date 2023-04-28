@@ -1,0 +1,24 @@
+{% extends 'main.html' %}
+
+{% block pagebody %}
+<a href="/work">Просмотреть ваших пациентов</a>
+<div class="main_card">
+    <div>Ваше имя: <p class="large_text">{{ fio }}</p></div>
+    <div>Ваши приемы:</div>
+    <div class="appointments">
+        {% for appointment in appointments %}
+            <div class="appointment">
+                <div class="datetime"> {{ appointment["datetime"] }} </div>
+                <div class="patient"> {{ appointment["fio"] }}</div>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
+
+
+{% block pagebodyscripts %}
+<script>
+
+</script>
+{% endblock %}

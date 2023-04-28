@@ -35,7 +35,7 @@
 
             <div class="form-group ">
               <label for="inputState">Врач</label>
-              <select id="doctorBox" onchange="doctorSelected();" class="form-control">
+              <select id="doctorBox" prefer="{{ selected_doctor }}" onchange="doctorSelected();" class="form-control">
                 
               </select>
             </div>
@@ -82,6 +82,8 @@ var doctors_workshifts = [];
 
 var doctor_id = undefined;
 var workshift_id = undefined;
+
+var selectedDoctor = parseInt(document.getElementById("doctorBox").getAttribute("prefer"));
 
 function formatDate(d) {
     let month = '' + (d.getMonth() + 1),
@@ -167,6 +169,11 @@ function specSelected() {
           let opt = document.createElement('option');
           opt.innerHTML = data[i]["fio"];
           opt.value = data[i]["id"];
+          if (!isNaN(selectedDoctor)) {
+            if (data[i]["id"] == selectedDoctor) {
+                opt.setAttribute("selected", "");
+            }
+          }
           doctorBox.appendChild(opt);
       }
       doctorSelected();
@@ -210,13 +217,22 @@ function dateSelected() {
 fetch("get_doctors", {}, function(data) {
     doctors_data = data;
     specializations = new Set();
+    let selectedDoctorSpec = undefined;
     for (let i = 0; i < data.length; i++) {
+        if (!isNaN(selectedDoctor)) {
+          if (data[i]["id"] == selectedDoctor) {
+            selectedDoctorSpec = data[i]["specialization"];
+          }
+        }
         specializations.add(data[i]["specialization"]);
     }
     let specBox = document.getElementById("specBox");
     for (let item of specializations) {
           let opt = document.createElement('option');
           opt.innerHTML = item;
+          if (selectedDoctorSpec == item) {
+            opt.setAttribute("selected", "");
+          }
           opt.value = item;
           specBox.appendChild(opt);
     }

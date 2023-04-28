@@ -1,8 +1,9 @@
 from flask import Blueprint, render_template, \
     url_for, request, session, flash, redirect
 from app.db.authorization import login_user, register_patient
-from app.utils.login import login_required, get_logged_in
+from app.utils.login import login_required, get_logged_in, get_roles
 from app.views.main.forms import LoginForm, PatientRegisterForm
+from app.utils.enums import Role
 
 from app.db.queries import get_polyclinics
 
@@ -22,7 +23,26 @@ def about():
 
 @view.route("/userhome")
 def userhome():
-    return redirect(url_for('main.main'))
+    roles = get_roles(get_logged_in())
+    role_names = []
+    if len(roles) > 1:
+        if Role.PATIENT in roles:
+            role_names.append("patient")
+        if Role.EMPLOYEE in roles:
+            role_names.append("admin")
+        if Role.DOCTOR in roles:
+            role_names.append("doctor")
+        print(role_names)
+        return render_template("userhome.html", roles=role_names)
+    elif len(roles) == 1:
+        if Role.PATIENT in roles:
+            return redirect(url_for('patient.lk'))
+        elif Role.ADMIN in roles:
+            return redirect(url_for('admin.lk'))
+        elif Role.ADMIN in roles:
+            return redirect(url_for('admin.admin'))
+    else:
+        return redirect(url_for('main.main'))
 
 
 @view.route("/login", methods=['GET', 'POST'])

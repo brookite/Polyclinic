@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template
 
-view = Blueprint('admin', __name__, url_prefix ='/admin')
+view = Blueprint('admin', __name__, url_prefix ='/')
 
 
 @view.route("/stats")
