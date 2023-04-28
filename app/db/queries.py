@@ -1,4 +1,4 @@
-from app.db.connection import create_query
+from app.db.connection import create_query, create_commit_query
 
 get_doctors = create_query("SELECT * from doctors")
 
@@ -27,7 +27,7 @@ SELECT datetime from doctor_appointments WHERE workshift_id=%s
 """
 )
 
-create_appointment = create_query(
+create_appointment = create_commit_query(
 """
 INSERT INTO doctor_appointments 
 (datetime, workshift_id, patient_id) 

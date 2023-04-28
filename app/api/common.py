@@ -19,7 +19,7 @@ def get_doctors_by_spec():
     if not missing:
         return jsonify(db_get_doctors_by_spec(args["specialization"]))
     else:
-        return missing_arguments(missing)
+        return missing_arguments(*missing)
 
 
 @api_blueprint.route("/get_doctor_workshifts")
@@ -39,7 +39,12 @@ def get_doctor_workshifts():
 def get_workshift_appointments():
     args, missing = require_arguments(request.args, "workshift_id")
     if not missing:
-        return jsonify(db_get_appointments_at_workshift(args["workshift_id"]))
+        result = db_get_appointments_at_workshift(args["workshift_id"])
+        new_result = []
+        for dt in result:
+            dt = dt["datetime"]
+            new_result.append(dt.hour * 3600 + dt.minute * 60 + dt.second)
+        return jsonify(new_result)
     else:
         return missing_arguments("workshift_id")
 

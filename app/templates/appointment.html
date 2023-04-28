@@ -53,9 +53,8 @@
                 
               </select>
             </div>
-
-            <button type="submit" class="submit_appointment">Записаться</button>
           </form>
+          <button class="submit_appointment">Записаться</button>
         </div>
       </div>
       <div class="col-md-7">
@@ -79,9 +78,84 @@
 <script>
 var specializations = new Set();
 var doctors_data = [];
+var doctors_workshifts = [];
 
+var doctor_id = undefined;
 var workshift_id = undefined;
-var selectedDoctor = undefined;
+
+function formatDate(d) {
+    let month = '' + (d.getMonth() + 1),
+        day = '' + d.getDate(),
+        year = d.getFullYear();
+
+    if (month.length < 2) 
+        month = '0' + month;
+    if (day.length < 2) 
+        day = '0' + day;
+
+    return [day, month, year].join('.');
+}
+
+function doctorSelected() {
+    let container = document.getElementById("doctorBox");
+    doctor_id = container.children[container.selectedIndex].getAttribute("value");
+    fetch("get_doctor_workshifts", {"id": doctor_id}, function(data) {
+      doctors_workshifts = data;
+      doctors_workshifts.sort();
+      let dateBox = document.getElementById("dateBox");
+      dateBox.innerHTML = "";
+      for (let item of doctors_workshifts) {
+            let w_id = item["id"];
+            let weekday = item["weekday"];
+            
+            let maxDate = new Date();
+            maxDate.setDate(maxDate.getDate() + 30);
+            for (let d = new Date(); d <= maxDate; d.setDate(d.getDate() + 1)) {
+              if (d.getDay() == weekday) {
+                let opt = document.createElement('option');
+                let formattedText = "";
+                switch (weekday) {
+                  case 1:
+                    formattedText += "пн."
+                    break;
+                  case 2:
+                    formattedText += "вт."
+                    break;
+                  case 3:
+                    formattedText += "ср."
+                    break;
+                  case 4:
+                    formattedText += "чт."
+                    break;
+                  case 5:
+                    formattedText += "пт."
+                    break;
+                  case 6:
+                    formattedText += "сб."
+                    break;
+                  case 7:
+                    formattedText += "вс."
+                    break;
+                }
+                formattedText += " ";
+                formattedText += formatDate(d);
+
+                opt.innerHTML = formattedText;
+                d.setHours(0)
+                d.setMinutes(0)
+                d.setSeconds(0)
+                d.setMilliseconds(0)
+                opt.value = Math.floor(d.valueOf() / 1000);
+                opt.setAttribute("workshift_id", w_id);
+                dateBox.appendChild(opt);
+              }
+            }
+      }
+      dateSelected();
+    }, function() {
+      console.error("Error while loading doctors");
+    });
+}
 
 function specSelected() {
     let specBox = document.getElementById("specBox");
@@ -90,24 +164,58 @@ function specSelected() {
       let doctorBox = document.getElementById("doctorBox");
       doctorBox.innerHTML = '';
       for (let i = 0; i < data.length; i++) {
-          var opt = document.createElement('option');
+          let opt = document.createElement('option');
           opt.innerHTML = data[i]["fio"];
-          opt.value = data[i]["fio"];
+          opt.value = data[i]["id"];
           doctorBox.appendChild(opt);
       }
+      doctorSelected();
     }, function() {
       console.error("Error while loading doctors specializations");
     });
 }
 
+function dateSelected() {
+    let timeBox = document.getElementById("timeBox");
+    timeBox.innerHTML = "";
+    let dateBox = document.getElementById("dateBox");
+    workshift_id = parseInt(dateBox[dateBox.selectedIndex].getAttribute("workshift_id"));
+    for (let workshift of doctors_workshifts) {
+      if (workshift["id"] == workshift_id) {
+        fetch("get_workshift_appointments", {"workshift_id": workshift_id}, function(data) {
+          let a = workshift["begin_time"].split(':'); 
+          let beginTime = (+a[0]) * 3600 + (+a[1]) * 60; 
+
+          a = workshift["end_time"].split(':');
+          let endTime = (+a[0]) * 3600 + (+a[1]) * 60;
+
+          for (let i = beginTime; i < endTime; i += 1800) {
+            if (data.indexOf(i) < 0) {
+              let opt = document.createElement('option');
+              let text = new Date(i * 1000).toISOString().slice(11, 19);
+              opt.innerHTML = text;
+              opt.value = i;
+              timeBox.appendChild(opt);
+            }
+            
+          } 
+        }, function() {
+          console.error("Error while loading doctors specializations");
+        });
+      }
+    }
+    
+}
+
 fetch("get_doctors", {}, function(data) {
     doctors_data = data;
+    specializations = new Set();
     for (let i = 0; i < data.length; i++) {
         specializations.add(data[i]["specialization"]);
     }
     let specBox = document.getElementById("specBox");
     for (let item of specializations) {
-          var opt = document.createElement('option');
+          let opt = document.createElement('option');
           opt.innerHTML = item;
           opt.value = item;
           specBox.appendChild(opt);
@@ -117,6 +225,25 @@ fetch("get_doctors", {}, function(data) {
   console.error("Error while loading doctors");
 });
 
+document.querySelector(".submit_appointment").addEventListener("click", 
+  function () {
+      let timeBox = document.getElementById("timeBox");
+      let dateBox = document.getElementById("dateBox");
+
+      let timestamp = parseInt(timeBox[timeBox.selectedIndex].value) + parseInt(dateBox[dateBox.selectedIndex].value);
+      console.log(timestamp);
+      apiPost("create_appointment", {"workshift_id": workshift_id, "datetime": timestamp}, function(data) {
+        if (data == 1) {
+          viewFlashMessage("Запись успешно создана");
+        } else {
+          viewFlashMessage("Не удалось записаться на данное время");
+        }
+        
+      }, function() {
+          viewFlashMessage("Не удалось записаться на данное время");
+      });
+  }
+)
 
 </script>
 {% endblock %}

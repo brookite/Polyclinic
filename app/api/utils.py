@@ -11,6 +11,6 @@ def require_arguments(reqargs, *args):
     return result, missing
 
 
-def missing_arguments(args):
+def missing_arguments(*args):
     args = ", ".join(args)
     return jsonify({"error_msg": f"Missing arguments: {args}"})

@@ -4,9 +4,12 @@ view = Blueprint('doctor', __name__, url_prefix ='/doctor')
 
 
 @view.route("/lk")
-def stats():
+def lk():
     return render_template("admin.html")
 
+@view.route("/work")
+def stats():
+    return render_template("admin.html")
 
 @view.route("/plan")
 def admin():

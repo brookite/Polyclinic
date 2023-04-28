@@ -1,5 +1,6 @@
 import psycopg2
 import psycopg2.extras
+import traceback
 
 
 def connect_db():
@@ -22,6 +23,21 @@ def create_query(query, max_count=None):
             result = [dict(ans) for ans in cursor.fetchmany(max_count)]
         else:
             result = [dict(ans) for ans in cursor.fetchall()]
+        close_db(db, cursor)
+        return result
+    return wrapper
+
+
+def create_commit_query(query):
+    def wrapper(*args):
+        db, cursor = connect_db()
+        try:
+            cursor.execute(query, args)
+            db.commit()
+            result = True
+        except:
+            traceback.print_exc()
+            result = False
         close_db(db, cursor)
         return result
     return wrapper
