@@ -1,0 +1,97 @@
+{% extends 'main.html' %}
+
+{% block pagebody %}
+<datalist id="patient_list">
+    {% for patient in patients %}
+    <option value="{{patient['id']}}">{{ patient["fio"] }}</option>
+    {% endfor %}
+</datalist>
+<datalist id="disease_list">
+    {% for disease in diseases %}
+    <option value="{{disease['id']}}">{{ disease["name"] }}</option>
+    {% endfor %}
+</datalist>
+<datalist id="medicament_list">
+    {% for medicament in medicaments %}
+    <option value="{{medicament['name']}}">{{ medicament["name"] }}</option>
+    {% endfor %}
+</datalist>
+<button class="cancelEdit" style="display: none;">Отменить редактирование</button>
+<form action="/work" method="post">
+    <label for="name">Номер пациента:</label>
+    <input type="text" id="patients" name="patient" list="patient_list">
+    <label for="first_visit">Первое посещение:</label>
+    <input type="date" id="first_visit" name="first_visit">
+    <label for="recovery_date">Дата выздоровления:</label>
+    <input type="date" id="recovery_date" name="recovery_date">
+    <br>
+    <textarea id="symptoms" class="text" cols="86" rows ="5" name="symptoms">Симптомы:</textarea>
+    <textarea id="treatment_course" class="text" cols="86" rows ="5" name="treatment_course">Курс лечения:</textarea>
+    <br>
+    <label for="medicament">Лекарство:</label>
+    <input type="text" id="medicament" name="medicament" list="medicament_list">
+    <label for="disease">Номер диагноза:</label>
+    <input type="text" id="disease" name="disease" list="disease_list">
+    <label for="name">Название обследования:</label>
+    <input type="text" id="test_name" name="test_name">
+    <label for="test">Дата обследования:</label>
+    <input type="datetime-local" id="test_datetime" name="test_datetime">
+    <label for="name">Стоимость обследования:</label>
+    <input type="number" id="test_cost" name="test_cost">
+    <input type="submit" value="Сохранить запись">
+    <input type="hidden" name="record_id" id="tag_record" value="">
+</form>
+<table class="patients">
+    {% for record in records %}
+      <tr>
+        {% for field in record %}
+        <td>{{ record[field] }}</td>
+        {% endfor %}
+        <td>
+            <button record_id="{{record['record_id']}}" class="editBtn">Ред.</button>
+        </td>
+      </tr>
+    {% endfor %}
+</table>
+{% endblock %}
+
+{% block stylesblock %}
+{% endblock %}
+
+
+{% block pagebodyscripts %}
+<script>
+    var records = undefined;
+    fetch("get_patient_history", {}, function(data) {
+        records = data;
+    }, function() {});
+    document.querySelector(".cancelEdit").addEventListener("click", function() {
+        document.querySelector("#tag_record").setAttribute("value", "");
+        document.querySelector(".cancelEdit").style = "display: none";
+    });
+    let editButtons = document.querySelectorAll(".editBtn");
+    document.querySelector("#first_visit").valueAsDate = new Date();
+    for (let item of editButtons) {
+        item.addEventListener("click", function(e) {
+            let but = e.target;
+            let id = parseInt(but.getAttribute("record_id"));
+            document.querySelector("#tag_record").setAttribute("value", id);
+            document.querySelector(".cancelEdit").style = "";
+            for (let record of records) { 
+                if (record["record_id"] == id) {
+                    document.querySelector("#patients").innerHTML = record["fio"];
+                    document.querySelector("#patients").value = record["owner_id"];
+                    document.querySelector("#first_visit").value = record["first_visit"];
+                    document.querySelector("#recovery_date").value = record["recovery_date"];
+                    document.querySelector("#symptoms").value = record["symptoms"];
+                    document.querySelector("#treatment_course").value = record["treatment_course"];
+                    document.querySelector("#medicament").value = record["medicines"].split(',')[0];
+                    fetch("get_disease_by_name", {"name": record["diseases"].split(',')[0]}, function(data) {
+                        document.querySelector("#disease").value = data[0]["id"];
+                    }, function() {});
+                }
+            }
+        });
+    }
+</script>
+{% endblock %}

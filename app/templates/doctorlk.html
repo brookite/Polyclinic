@@ -13,6 +13,27 @@
             </div>
         {% endfor %}
     </div>
+    <div class="plan">
+        <p class="plan_name">Ваш план: </p>
+        <table>
+            <tr>
+                <th>День недели</th>
+                <th>Время начала смены</th>
+                <th>Время окончания смены</th>
+                <th>Номер поликлиники</th>
+                <th>Этаж и кабинет</th>
+            </tr>
+            {% for record in plan %}
+            <tr>
+                <td>{{record["weekday"]}}</td>
+                <td>{{record["begin_time"]}}</td>
+                <td>{{record["end_time"]}}</td>
+                <td>{{record["polyclinic_number"]}}</td>
+                <td>{{record["floor"]}} этаж, кабинет {{record["number"]}}</td>
+            </tr>
+            {% endfor %}    
+        </table>
+    </div>
 </div>
 {% endblock %}
 

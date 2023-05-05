@@ -84,7 +84,7 @@ LEFT JOIN diseases d
 ON pfd.disease_id=d.id
 LEFT JOIN doctors doc
 ON dpf.doctor_id=doc.id
-WHERE owner_id=4
+WHERE owner_id=%s
 GROUP BY record_id, symptoms, treatment_course, first_visit, 
 recovery_date, test_name, doc.id, test_cost, test_datetime, 
 doctor_fio, doctor_specialization;
@@ -101,7 +101,7 @@ WHERE patient_id=%s;
 """
 )
 
-# doctor section
+# doctor queries
 
 get_doctor_appointments = create_query(
 """
@@ -115,7 +115,7 @@ where workshift_id in (SELECT id from doctor_workshifts where doctor_id=%s)
 
 get_doctor_plan = create_query(
 """
-SELECT weekday, begin_time, end_time, fio, number, floor, polyclinic_number 
+SELECT weekday, begin_time, end_time, number, floor, polyclinic_number 
 FROM doctor_workshifts
 JOIN doctors ON doctor_workshifts.doctor_id=doctors.id
 JOIN doctor_offices ON doctor_workshifts.office_id=doctor_offices.id
@@ -123,27 +123,94 @@ WHERE doctor_id=%s;
 """
 )
 
-get_doctor_patient_history = create_query(
+get_medicaments = create_query(
 """
-SELECT * from patient_files 
-LEFT JOIN doctors_patient_files ON doctors_patient_files.patient_file_record_id=patient_files.record_id
-WHERE doctor_id=%s;
+SELECT * from medicaments;
 """
 )
 
-edit_patient_record = create_query(
+get_diseases = create_query(
+"""
+SELECT * from diseases;
+"""
+)
+
+get_disease_by_name = create_query(
+"""
+SELECT name, id from diseases WHERE name=%s;
+"""
+)
+
+get_doctor_patient_history = create_query(
+"""
+SELECT record_id, p.fio, p.phone_number, STRING_AGG (
+	pfm.medicament_name,
+        ','
+       ORDER BY
+        pfm.medicament_name
+    ) medicines, 
+ 	STRING_AGG (
+	d.name,
+        ','
+       ORDER BY
+        d.name
+    ) diseases, 
+	symptoms, treatment_course, 
+	record_id, patient_files.owner_id, 
+	first_visit, recovery_date, pt.name AS test_name, 
+	pt.datetime AS test_datetime
+FROM patient_files 
+LEFT JOIN patient_tests pt
+ON patient_files.record_id=pt.file_id
+LEFT JOIN patients p ON patient_files.owner_id=p.id
+LEFT JOIN doctors_patient_files dpf
+ON dpf.patient_file_record_id=patient_files.record_id
+LEFT JOIN patient_files_diseases pfd
+ON pfd.patient_file_record_id=patient_files.record_id
+LEFT JOIN patient_files_medicaments pfm
+ON pfm.patient_file_record_id=patient_files.record_id
+LEFT JOIN diseases d
+ON pfd.disease_id=d.id
+LEFT JOIN doctors doc
+ON dpf.doctor_id=doc.id
+WHERE doc.id=%s
+GROUP BY record_id, p.fio, p.phone_number, symptoms, treatment_course, first_visit, 
+recovery_date, test_name, patient_files.owner_id, test_datetime;
+"""
+)
+
+edit_patient_record = create_commit_query(
 """
 UPDATE patient_files SET 
-symptoms=%s
-treatment_course=%s
+symptoms=%s,
+treatment_course=%s,
 recovery_date=%s
 WHERE record_id=%s;
 """
 )
 
-create_patient_record = create_query(
+create_patient_record = create_commit_query(
 """
 INSERT INTO patient_files(symptoms, treatment_course, first_visit, owner_id)
+VALUES (%s, %s, %s, %s);
+INSERT INTO patient_files_medicaments(patient_file_record_id, medicament_name)
+VALUES ((SELECT currval(pg_get_serial_sequence('patient_files','record_id'))), %s);
+INSERT INTO patient_files_diseases(patient_file_record_id, disease_id)
+VALUES ((SELECT currval(pg_get_serial_sequence('patient_files','record_id'))), %s);
+INSERT INTO doctors_patient_files(patient_file_record_id, doctor_id)
+VALUES ((SELECT currval(pg_get_serial_sequence('patient_files','record_id'))), %s);
+"""
+)
+
+get_last_record_id = create_query(
+"""
+SELECT max(record_id) AS last_record_id FROM patient_files WHERE owner_id=%s;
+"""
+)
+
+create_test = create_commit_query(
+"""
+INSERT INTO patient_tests(name, datetime, cost, file_id)
 VALUES (%s, %s, %s, %s);
 """
 )
@@ -244,9 +311,9 @@ DELETE FROM doctor_workshifts WHERE id=%s;
 change_workshift = create_commit_query(
 """
 UPDATE doctor_workshifts SET 
-begin_time =%s
-end_time=%s
-doctor_id=%s
+begin_time =%s,
+end_time=%s,
+doctor_id=%s,
 office_id=%s
 WHERE id=%s;
 """
