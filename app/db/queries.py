@@ -217,24 +217,23 @@ VALUES (%s, %s, %s, %s);
 
 # admin
 
-get_doctor_test_cost = create_query(
+get_test_cost = create_query(
 """
-SELECT COALESCE(SUM(cost), 0) FROM patient_tests 
+SELECT COALESCE(SUM(cost), 0) AS cost FROM patient_tests 
 LEFT JOIN doctors_patient_files 
-ON patient_tests.file_id=doctors_patient_files.patient_file_record_id
-WHERE doctor_id=%s;
+ON patient_tests.file_id=doctors_patient_files.patient_file_record_id;
 """
 )
 
 get_current_patient_count = create_query(
 """
-SELECT COUNT(*) FROM patient_files WHERE recovery_date is NULL;
+SELECT COUNT(*) AS patient_count FROM patient_files WHERE recovery_date is NULL;
 """
 )
 
-get_recovery_percentage = create_query(
+get_avg_recovery_time = create_query(
 """
-SELECT avg(recovery_date - first_visit) FROM patient_files_diseases 
+SELECT avg(recovery_date - first_visit) AS avg_recovery_time FROM patient_files_diseases 
 JOIN patient_files ON patient_files_diseases.patient_file_record_id=patient_files.record_id
 WHERE recovery_date IS NOT NULL;
 """
@@ -242,9 +241,10 @@ WHERE recovery_date IS NOT NULL;
 
 get_disease_stats = create_query(
 """
-SELECT disease_id, COUNT(*) from patient_files 
+SELECT disease_id, diseases.name AS name, COUNT(*) AS disease_count from patient_files 
 JOIN patient_files_diseases ON patient_files.record_id=patient_files_diseases.patient_file_record_id 
-GROUP BY disease_id ORDER BY disease_id ASC;
+JOIN diseases ON diseases.id=patient_files_diseases.disease_id
+GROUP BY disease_id, diseases.name ORDER BY disease_id ASC;
 """
 )
 

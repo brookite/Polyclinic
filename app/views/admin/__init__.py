@@ -2,13 +2,25 @@ from flask import Blueprint, render_template
 from app.utils.login import role_required, get_user, get_logged_in
 from app.utils.enums import Role
 
+from app.db.queries import get_test_cost, get_current_patient_count, \
+    get_avg_recovery_time, get_disease_stats
+
 view = Blueprint('admin', __name__, url_prefix ='/')
 
 
 @view.route("/stats")
 @role_required([Role.EMPLOYEE])
 def stats():
-    return render_template("stats.html")
+    total_cost = get_test_cost()[0]["cost"]
+    patient_count = get_current_patient_count()[0]["patient_count"]
+    avg_recovery_time = round(abs(get_avg_recovery_time()[0]["avg_recovery_time"]), 2)
+    disease_stats = get_disease_stats()
+    return render_template("stats.html", 
+                           patient_count=patient_count,
+                           total_cost=total_cost,
+                           avg_recovery_time=avg_recovery_time,
+                           disease_stats=disease_stats
+                           )
 
 
 @view.route("/admin")

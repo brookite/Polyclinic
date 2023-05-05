@@ -1,0 +1,34 @@
+{% extends 'main.html' %}
+
+{% block pagebody %}
+<section class="health_section layout_padding">
+    <div class="info_field" id="patient_count">
+        Пациентов, которые еще не вылечены: 
+        {{ patient_count }}
+    </div>
+    <div class="info_field" id="avg_recovery_time">
+        Среднее время выздоровления:
+        {{ avg_recovery_time }} дня
+    </div>
+    <div class="info_field" id="avg_recovery_time">
+        Общая прибыль от проведенных исследований:
+        {{ total_cost }}
+    </div>
+    <div class="info_field" id="disease_stats">
+        Статистика заболеваний
+        <table>
+            {% for stat in disease_stats %}
+            <tr>
+                <td>{{stat["name"]}}</td>
+                <td>{{stat["disease_count"]}}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+</section>
+
+{% endblock %}
+
+{% block pagebodyscripts %}
+
+{% endblock %}
