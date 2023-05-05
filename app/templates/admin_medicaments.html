@@ -1,0 +1,39 @@
+{% extends 'main.html' %}
+
+{% block pagebody %}
+<datalist id="disease_list">
+    {% for disease in diseases %}
+    <option value="{{disease['id']}}">{{ disease["name"] }}</option>
+    {% endfor %}
+</datalist>
+<section class="health_section layout_padding">
+<form action="/admin_medicaments" method="post">
+    <label for="name">Название:</label>
+    <input type="text" id="name" name="name">
+    <br>
+    <label for="contraindications">Противопоказания:</label>
+    <textarea id="contraindications" class="text" cols="86" rows="5" name="contraindications"></textarea>
+    <br>
+    <label for="indications">Показания к применению:</label>
+    <textarea id="indications" class="text" cols="86" rows ="5" name="indications"></textarea>
+    <br>
+    <label for="disease">Номер диагноза:</label>
+    <input type="text" id="disease" name="disease" list="disease_list">
+    <br>
+    <input type="submit" value="Сохранить">
+</form>
+<table class="medicaments">
+    {% for record in records %}
+      <tr>
+        {% for field in record %}
+        <td>{{ record[field] }}</td>
+        {% endfor %}
+      </tr>
+    {% endfor %}
+</table>
+</section>
+
+{% endblock %}
+
+{% block pagebodyscripts %}
+{% endblock %}

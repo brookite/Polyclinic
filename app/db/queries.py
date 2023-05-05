@@ -262,6 +262,12 @@ VALUES (%s, %s, %s, %s, %s, %s);
 """
 )
 
+get_doctor_offices = create_query(
+"""
+SELECT id, floor, number, polyclinic_number FROM doctor_offices;
+"""
+)
+
 add_doctor_office = create_commit_query(
 """
 INSERT INTO doctor_offices (number, floor, polyclinic_number) VALUES (%s, %s, %s);
@@ -280,6 +286,18 @@ INSERT INTO diseases (name) values (%s);
 """
 )
 
+get_disease_names = create_query(
+"""
+SELECT name from diseases;
+"""
+)
+
+get_medicaments = create_query(
+"""
+SELECT name, contraindications, indications FROM medicaments;
+"""
+)
+
 add_new_medicament = create_commit_query(
 """
 INSERT INTO medicaments (name, contraindications, indications) 
@@ -287,9 +305,9 @@ VALUES (%s, %s, %s);
 """
 )
 
-add_disease_to_medicament  = create_commit_query(
+add_disease_to_medicament = create_commit_query(
 """
-INSERT INTO diseases_medicaments 
+INSERT INTO diseases_medicaments(disease_id, medicament_name) 
 VALUES (%s, %s)
 """
 )

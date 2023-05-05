@@ -247,7 +247,6 @@ document.querySelector(".submit_appointment").addEventListener("click",
       let dateBox = document.getElementById("dateBox");
 
       let timestamp = parseInt(timeBox[timeBox.selectedIndex].value) + parseInt(dateBox[dateBox.selectedIndex].value);
-      console.log(timestamp);
       apiPost("create_appointment", {"workshift_id": workshift_id, "datetime": timestamp}, function(data) {
         if (data == 1) {
           viewFlashMessage("Запись успешно создана");

@@ -1,0 +1,25 @@
+{% extends 'main.html' %}
+
+{% block pagebody %}
+<section class="health_section layout_padding">
+<form action="/admin_diseases" method="post">
+    <label for="name">Название заболевания:</label>
+    <input type="text" id="disease" name="disease">
+    <input type="submit" value="Сохранить">
+</form>
+<table class="diseases">
+    {% for record in records %}
+      <tr>
+        {% for field in record %}
+        <td>{{ record[field] }}</td>
+        {% endfor %}
+      </tr>
+    {% endfor %}
+</table>
+</section>
+
+{% endblock %}
+
+{% block pagebodyscripts %}
+
+{% endblock %}

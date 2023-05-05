@@ -1,0 +1,47 @@
+{% extends 'main.html' %}
+
+{% block pagebody %}
+<section class="health_section layout_padding">
+<form action="/admin_offices" method="post">
+    <label for="name">Номер этажа:</label>
+    <input type="number" id="floor" name="floor">
+    <br>
+    <label for="name">Название кабинета:</label>
+    <input type="text" id="name" name="name">
+    <br>
+    <label for="name">Номер поликлиники:</label>
+    <input type="number" id="number" name="number">
+    <input type="submit" value="Сохранить">
+</form>
+<table class="offices">
+    {% for record in records %}
+      <tr>
+        {% for field in record %}
+        {% if field != "id" %}
+            <td>{{ record[field] }}</td>
+        {% endif %}
+        {% endfor %}
+        <td>
+            <button record_id="{{record['id']}}" class="editBtn">Удалить</button>
+        </td> 
+      </tr>
+    {% endfor %}
+</table>
+</section>
+
+{% endblock %}
+
+{% block pagebodyscripts %}
+<script>
+    let editButtons = document.querySelectorAll(".editBtn");
+    for (let item of editButtons) {
+        item.addEventListener("click", function(e) {
+            let but = e.target;
+            let id = parseInt(but.getAttribute("record_id"));
+            fetch("remove_doctor_office", {"office_id": id}, function() {
+                window.location.reload();
+            }, function() {});
+        });
+    }
+</script>
+{% endblock %}

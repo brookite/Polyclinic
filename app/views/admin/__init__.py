@@ -1,9 +1,11 @@
-from flask import Blueprint, render_template
+from flask import Blueprint, render_template, request
 from app.utils.login import role_required, get_user, get_logged_in
 from app.utils.enums import Role
 
 from app.db.queries import get_test_cost, get_current_patient_count, \
-    get_avg_recovery_time, get_disease_stats
+    get_avg_recovery_time, get_disease_stats, add_new_disease, get_disease_names, \
+    add_new_medicament, get_medicaments, add_doctor_office, get_doctor_offices, \
+    get_diseases, add_disease_to_medicament, get_diseases
 
 view = Blueprint('admin', __name__, url_prefix ='/')
 
@@ -41,16 +43,32 @@ def admin_doctors():
     return render_template("admin_doctors.html")
 
 
-@view.route("/admin_medicaments")
+@view.route("/admin_medicaments", methods=["POST", "GET"])
 @role_required([Role.EMPLOYEE])
 def admin_medicaments():
-    return render_template("admin_medicaments.html")
+    if request.method == "POST":
+        if request.form.get("name"):
+            add_new_medicament(
+                request.form.get("name"),
+                request.form.get("contraindications"),
+                request.form.get("indications"),
+            )
+        if request.form.get("disease"):
+            add_disease_to_medicament(request.form.get("disease"), request.form.get("name"))
+
+    diseases = get_diseases()
+    return render_template("admin_medicaments.html", 
+                           records=get_medicaments(), diseases=diseases)
 
 
-@view.route("/admin_diseases")
+@view.route("/admin_diseases", methods=["POST", "GET"])
 @role_required([Role.EMPLOYEE])
 def admin_diseases():
-    return render_template("admin_diseases.html")
+    if request.method == "POST":
+        if request.form.get("disease"):
+            disease = request.form.get("disease")
+            add_new_disease(disease)
+    return render_template("admin_diseases.html", records=get_disease_names())
 
 
 @view.route("/admin_employees")
@@ -59,7 +77,14 @@ def admin_employees():
     return render_template("admin_employees.html")
 
 
-@view.route("/admin_offices")
+@view.route("/admin_offices", methods=["GET", "POST"])
 @role_required([Role.EMPLOYEE])
 def admin_offices():
-    return render_template("admin_offices.html")
+    if request.method == "POST":
+        if request.form.get("name"):
+            add_doctor_office(
+                int(request.form.get("floor")),
+                request.form.get("name"),
+                int(request.form.get("number")),
+            )
+    return render_template("admin_offices.html", records=get_doctor_offices())

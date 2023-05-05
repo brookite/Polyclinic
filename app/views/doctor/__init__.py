@@ -28,7 +28,6 @@ def doctor_work():
     doctor_id = get_user(get_logged_in())["doctor_id"]
     if request.method == "POST":
         record_id = request.form["record_id"]
-        print(request.form)
         if record_id:
             edit_patient_record(request.form.get("symptoms"), 
                                 request.form.get("treatment_course"),
