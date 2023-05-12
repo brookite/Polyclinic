@@ -2,10 +2,13 @@ from flask import Blueprint, render_template, request
 from app.utils.login import role_required, get_user, get_logged_in
 from app.utils.enums import Role
 
+import datetime
+
 from app.db.queries import get_test_cost, get_current_patient_count, \
     get_avg_recovery_time, get_disease_stats, add_new_disease, get_disease_names, \
     add_new_medicament, get_medicaments, add_doctor_office, get_doctor_offices, \
-    get_diseases, add_disease_to_medicament, get_diseases
+    get_diseases, add_disease_to_medicament, get_diseases, \
+    get_employees, add_new_employee, edit_employee, get_doctors_full, add_new_doctor
 
 view = Blueprint('admin', __name__, url_prefix ='/')
 
@@ -37,10 +40,18 @@ def admin_workshifts():
     return render_template("admin_workshifts.html")
 
 
-@view.route("/admin_doctors")
+@view.route("/admin_doctors", methods=["POST", "GET"])
 @role_required([Role.EMPLOYEE])
 def admin_doctors():
-    return render_template("admin_doctors.html")
+    if request.method == "POST":
+        if request.form.get("fio"):
+            add_new_doctor(
+                request.form.get("fio"),
+                request.form.get("specialization"),
+                request.form.get("category"),
+                request.form.get("passport_data"),
+            )
+    return render_template("admin_doctors.html", records=get_doctors_full())
 
 
 @view.route("/admin_medicaments", methods=["POST", "GET"])
@@ -71,10 +82,33 @@ def admin_diseases():
     return render_template("admin_diseases.html", records=get_disease_names())
 
 
-@view.route("/admin_employees")
+@view.route("/admin_employees", methods=["POST", "GET"])
 @role_required([Role.EMPLOYEE])
 def admin_employees():
-    return render_template("admin_employees.html")
+    if request.method == "POST":
+        if request.form.get("record_id"):
+            edit_employee(
+                request.form.get("fio"),
+                request.form.get("birthdate"),
+                request.form.get("address"),
+                request.form.get("passport_data"),
+                request.form.get("post"),
+                request.form.get("record_id")
+            )
+        elif request.form.get("fio"):
+            add_new_employee(
+                request.form.get("fio"),
+                request.form.get("birthdate"),
+                request.form.get("address"),
+                datetime.datetime.now().date(),
+                request.form.get("passport_data"),
+                request.form.get("post"),
+            )
+    employees = get_employees()
+    for employee in employees:
+        employee["birthdate"] = employee["birthdate"].strftime("%Y-%m-%d")
+        employee["employment_date"] = employee["employment_date"].strftime("%Y-%m-%d")
+    return render_template("admin_employees.html", records=employees)
 
 
 @view.route("/admin_offices", methods=["GET", "POST"])

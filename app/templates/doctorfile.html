@@ -64,34 +64,34 @@
     var records = undefined;
     fetch("get_patient_history", {}, function(data) {
         records = data;
+        let editButtons = document.querySelectorAll(".editBtn");
+        document.querySelector("#first_visit").valueAsDate = new Date();
+        for (let item of editButtons) {
+            item.addEventListener("click", function(e) {
+                let but = e.target;
+                let id = parseInt(but.getAttribute("record_id"));
+                document.querySelector("#tag_record").setAttribute("value", id);
+                document.querySelector(".cancelEdit").style = "";
+                for (let record of records) { 
+                    if (record["record_id"] == id) {
+                        document.querySelector("#patients").innerHTML = record["fio"];
+                        document.querySelector("#patients").value = record["owner_id"];
+                        document.querySelector("#first_visit").value = record["first_visit"];
+                        document.querySelector("#recovery_date").value = record["recovery_date"];
+                        document.querySelector("#symptoms").value = record["symptoms"];
+                        document.querySelector("#treatment_course").value = record["treatment_course"];
+                        document.querySelector("#medicament").value = record["medicines"].split(',')[0];
+                        fetch("get_disease_by_name", {"name": record["diseases"].split(',')[0]}, function(data) {
+                            document.querySelector("#disease").value = data[0]["id"];
+                        }, function() {});
+                    }
+                }
+            });
+        }
     }, function() {});
     document.querySelector(".cancelEdit").addEventListener("click", function() {
         document.querySelector("#tag_record").setAttribute("value", "");
         document.querySelector(".cancelEdit").style = "display: none";
     });
-    let editButtons = document.querySelectorAll(".editBtn");
-    document.querySelector("#first_visit").valueAsDate = new Date();
-    for (let item of editButtons) {
-        item.addEventListener("click", function(e) {
-            let but = e.target;
-            let id = parseInt(but.getAttribute("record_id"));
-            document.querySelector("#tag_record").setAttribute("value", id);
-            document.querySelector(".cancelEdit").style = "";
-            for (let record of records) { 
-                if (record["record_id"] == id) {
-                    document.querySelector("#patients").innerHTML = record["fio"];
-                    document.querySelector("#patients").value = record["owner_id"];
-                    document.querySelector("#first_visit").value = record["first_visit"];
-                    document.querySelector("#recovery_date").value = record["recovery_date"];
-                    document.querySelector("#symptoms").value = record["symptoms"];
-                    document.querySelector("#treatment_course").value = record["treatment_course"];
-                    document.querySelector("#medicament").value = record["medicines"].split(',')[0];
-                    fetch("get_disease_by_name", {"name": record["diseases"].split(',')[0]}, function(data) {
-                        document.querySelector("#disease").value = data[0]["id"];
-                    }, function() {});
-                }
-            }
-        });
-    }
 </script>
 {% endblock %}

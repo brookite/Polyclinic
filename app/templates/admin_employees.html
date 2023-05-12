@@ -1,0 +1,67 @@
+{% extends 'main.html' %}
+
+{% block pagebody %}
+<button class="cancelEdit" style="display: none;">Отменить редактирование</button>
+<form action="/admin_employees" method="post">
+    <label for="name">ФИО: </label>
+    <input type="text" id="fio" name="fio">
+    <label for="address">Адрес:</label>
+    <input type="text" id="address" name="address">
+    <label for="birthdate">Дата рождения:</label>
+    <input type="date" id="birthdate" name="birthdate">
+    <label for="passport">Паспортные данные: </label>
+    <input type="text" id="passport" name="passport_data">
+    <label for="post">Должность: </label>
+    <input type="text" id="post" name="post">
+    <br>
+    <input type="submit" value="Сохранить запись">
+    <input type="hidden" name="record_id" id="tag_record" value="">
+</form>
+<table class="patients">
+    {% for record in records %}
+      <tr>
+        {% for field in record %}
+        <td>{{ record[field] }}</td>
+        {% endfor %}
+        <td>
+            <button record_id="{{record['id']}}" class="editBtn">Ред.</button>
+        </td>
+      </tr>
+    {% endfor %}
+</table>
+{% endblock %}
+
+{% block stylesblock %}
+{% endblock %}
+
+
+{% block pagebodyscripts %}
+<script>
+    var records = undefined;
+    fetch("get_employees", {}, function(data) {
+        records = data;
+        let editButtons = document.querySelectorAll(".editBtn");
+        for (let item of editButtons) {
+            item.addEventListener("click", function(e) {
+                let but = e.target;
+                let id = parseInt(but.getAttribute("record_id"));
+                document.querySelector("#tag_record").setAttribute("value", id);
+                document.querySelector(".cancelEdit").style = "";
+                for (let record of records) { 
+                    if (record["id"] == id) {
+                        document.querySelector("#fio").value = record["fio"];
+                        document.querySelector("#address").value = record["address"];
+                        document.querySelector("#birthdate").value = record["birthdate"];
+                        document.querySelector("#passport").value = record["passport_data"];
+                        document.querySelector("#post").value = record["post"];
+                    }
+                }
+            });
+        }
+    }, function() {});
+    document.querySelector(".cancelEdit").addEventListener("click", function() {
+        document.querySelector("#tag_record").setAttribute("value", "");
+        document.querySelector(".cancelEdit").style = "display: none";
+    });
+</script>
+{% endblock %}

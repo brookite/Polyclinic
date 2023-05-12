@@ -2,7 +2,9 @@ from app.db.connection import create_query, create_commit_query
 
 # common queries
 
-get_doctors = create_query("SELECT * from doctors")
+get_doctors_full = create_query("SELECT * from doctors")
+
+get_doctors = create_query("SELECT name, fio, specialization from doctors")
 
 get_doctor_by_id = create_query("SELECT * from doctors WHERE id=%s")
 
@@ -255,10 +257,33 @@ VALUES (%s, %s, %s, %s);
 """
 )
 
+remove_doctor = create_commit_query(
+"""
+DELETE FROM doctor_appointments WHERE workshift_id IN 
+	(SELECT id FROM doctor_workshifts WHERE doctor_id = %s);
+DELETE FROM doctor_workshifts WHERE doctor_id = %s;
+DELETE FROM doctors_polyclinics WHERE doctor_id = %s;
+DELETE FROM doctors_patient_files WHERE doctor_id = %s;
+DELETE FROM doctors WHERE id=%s
+"""
+)
+
 add_new_employee = create_commit_query(
 """
-INSERT INTO employees (fio, birthday, address, employment_date, passport_data, post)
+INSERT INTO employees (fio, birthdate, address, employment_date, passport_data, post)
 VALUES (%s, %s, %s, %s, %s, %s);
+"""
+)
+
+edit_employee = create_commit_query(
+"""
+UPDATE employees SET 
+fio=%s,
+birthdate=%s,
+address=%s,
+passport_data=%s,
+post=%s
+WHERE id=%s;
 """
 )
 
@@ -302,6 +327,12 @@ add_new_medicament = create_commit_query(
 """
 INSERT INTO medicaments (name, contraindications, indications) 
 VALUES (%s, %s, %s);
+"""
+)
+
+get_employees = create_query(
+"""
+SELECT * from employees;
 """
 )
 

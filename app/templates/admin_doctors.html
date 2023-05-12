@@ -1,0 +1,52 @@
+{% extends 'main.html' %}
+
+{% block pagebody %}
+<form action="/admin_doctors" method="post">
+    <label for="name">ФИО: </label>
+    <input type="text" id="fio" name="fio">
+    <label for="specialization">Специализация: </label>
+    <input type="text" id="specialization" name="specialization">
+    <label for="category">Категория: </label>
+    <input type="text" id="category" name="category">
+    <label for="passport">Паспортные данные: </label>
+    <input type="text" id="passport" name="passport_data">
+    <br>
+    <input type="submit" value="Сохранить запись">
+    <input type="hidden" name="record_id" id="tag_record" value="">
+</form>
+<table class="patients">
+    {% for record in records %}
+      <tr>
+        {% for field in record %}
+        <td>{{ record[field] }}</td>
+        {% endfor %}
+        <td>
+            <button record_id="{{record['id']}}" class="editBtn">Удалить</button>
+        </td>
+      </tr>
+    {% endfor %}
+</table>
+{% endblock %}
+
+{% block stylesblock %}
+{% endblock %}
+
+
+{% block pagebodyscripts %}
+<script>
+    var records = undefined;
+    fetch("get_doctors_full", {}, function(data) {
+        records = data;
+        let editButtons = document.querySelectorAll(".editBtn");
+        for (let item of editButtons) {
+            item.addEventListener("click", function(e) {
+            let but = e.target;
+            let id = parseInt(but.getAttribute("record_id"));
+            fetch("remove_doctor", {"id": id}, function() {
+                window.location.reload();
+            }, function() {});
+            });
+        }
+    }, function() {});
+</script>
+{% endblock %}
