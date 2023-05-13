@@ -8,7 +8,7 @@
 </datalist>
 <datalist id="disease_list">
     {% for disease in diseases %}
-    <option value="{{disease['id']}}">{{ disease["name"] }}</option>
+    <option value="{{disease['name']}}">{{ disease["name"] }}</option>
     {% endfor %}
 </datalist>
 <datalist id="medicament_list">
@@ -17,8 +17,8 @@
     {% endfor %}
 </datalist>
 <button class="cancelEdit" style="display: none;">Отменить редактирование</button>
-<form action="/work" method="post">
-    <label for="name">Номер пациента:</label>
+<form action="/work" method="post" id="form">
+    <label for="patients">Номер пациента:</label>
     <input type="text" id="patients" name="patient" list="patient_list">
     <label for="first_visit">Первое посещение:</label>
     <input type="date" id="first_visit" name="first_visit">
@@ -29,15 +29,25 @@
     <textarea id="treatment_course" class="text" cols="86" rows ="5" name="treatment_course">Курс лечения:</textarea>
     <br>
     <label for="medicament">Лекарство:</label>
-    <input type="text" id="medicament" name="medicament" list="medicament_list">
+    <input type="text" id="medicament"list="medicament_list">
+    <button class="addMedicament">+</button>
+    <button class="removeMedicament">-</button>
+    <select id="medicaments" multiple>
+
+    </select>
     <label for="disease">Номер диагноза:</label>
-    <input type="text" id="disease" name="disease" list="disease_list">
-    <label for="name">Название обследования:</label>
+    <button class="addDisease">+</button>
+    <button class="removeDisease">-</button>
+    <select id="diseases" multiple>
+
+    </select>
+    <input type="text" id="disease" list="disease_list">
+    <label for="test_name">Название обследования:</label>
     <input type="text" id="test_name" name="test_name">
-    <label for="test">Дата обследования:</label>
+    <label for="test_datetime">Дата обследования:</label>
     <input type="datetime-local" id="test_datetime" name="test_datetime">
-    <label for="name">Стоимость обследования:</label>
-    <input type="number" id="test_cost" name="test_cost">
+    <label for="test_cost">Стоимость обследования:</label>
+    <input type="number" id="test_cost" name="test_cost" min="0" value="0">
     <input type="submit" value="Сохранить запись">
     <input type="hidden" name="record_id" id="tag_record" value="">
 </form>
@@ -80,10 +90,22 @@
                         document.querySelector("#recovery_date").value = record["recovery_date"];
                         document.querySelector("#symptoms").value = record["symptoms"];
                         document.querySelector("#treatment_course").value = record["treatment_course"];
-                        document.querySelector("#medicament").value = record["medicines"].split(',')[0];
-                        fetch("get_disease_by_name", {"name": record["diseases"].split(',')[0]}, function(data) {
-                            document.querySelector("#disease").value = data[0]["id"];
-                        }, function() {});
+                        document.querySelector("#medicaments").innerHTML = '';
+                        let medicaments = record["medicines"].split(',');
+                        for (let medicament of medicaments) {
+                            let option = document.createElement("option");
+                            option.innerHTML = medicament;
+                            option.value = medicament;
+                            document.querySelector("#medicaments").appendChild(option);
+                        }
+                        document.querySelector("#diseases").innerHTML = '';
+                        let diseases = record["diseases"].split(',');
+                        for (let disease of diseases) {
+                            let option = document.createElement("option");
+                            option.innerHTML = disease;
+                            option.value = disease;
+                            document.querySelector("#diseases").appendChild(option);
+                        }
                     }
                 }
             });
@@ -93,5 +115,51 @@
         document.querySelector("#tag_record").setAttribute("value", "");
         document.querySelector(".cancelEdit").style = "display: none";
     });
+    $("#form").submit( function(eventObj) {
+      let medicaments = document.querySelectorAll("#medicaments > *");
+      let medicamentsList = [];
+      for (let i = 0; i < medicaments.length; i++) {
+        medicamentsList.push(medicaments[i].value);
+      }
+      let diseases = document.querySelectorAll("#diseases > *");
+      let diseasesList = [];
+      for (let i = 0; i < diseases.length; i++) {
+        diseasesList.push(diseases[i].value);
+      }
+      $("<input />").attr("type", "hidden")
+          .attr("name", "medicaments")
+          .attr("value", medicamentsList.join(","))
+          .appendTo("#form");
+      $("<input />").attr("type", "hidden")
+          .attr("name", "diseases")
+          .attr("value", diseasesList.join(","))
+          .appendTo("#form");
+      return true;
+  });
+
+  document.querySelector(".addDisease").addEventListener("click", function(e) {
+    e.preventDefault();
+    let option = document.createElement("option");
+    option.innerHTML = document.querySelector("#disease").value;
+    document.querySelector("#diseases").appendChild(option);
+  });
+  document.querySelector(".removeDisease").addEventListener("click", function(e) {
+    e.preventDefault();
+    for (let child of document.querySelector("#diseases").selectedOptions) {
+        document.querySelector("#diseases").removeChild(child); 
+    } 
+  });
+  document.querySelector(".addMedicament").addEventListener("click", function(e) {
+    e.preventDefault();
+    let option = document.createElement("option");
+    option.innerHTML = document.querySelector("#medicament").value;
+    document.querySelector("#medicaments").appendChild(option);
+  });
+  document.querySelector(".removeMedicament").addEventListener("click", function(e) {
+    e.preventDefault();
+    for (let child of document.querySelector("#medicaments").selectedOptions) {
+        document.querySelector("#medicaments").removeChild(child);
+    } 
+  });
 </script>
 {% endblock %}

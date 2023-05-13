@@ -1,0 +1,82 @@
+{% extends 'main.html' %}
+
+{% block pagebody %}
+<datalist id="doctor_list">
+    {% for doctor in doctors %}
+    <option value="{{doctor['id']}}">{{ doctor["fio"] }}</option>
+    {% endfor %}
+</datalist>
+<datalist id="office_list">
+    {% for office in offices %}
+    <option value="{{office['id']}}"> поликлиника {{ office["polyclinic_number"] }}, этаж {{ office["floor"] }}, кабинеь {{ office["number"] }}</option>
+    {% endfor %}
+</datalist>
+<section class="health_section layout_padding">
+<form action="/admin_workshifts" method="post">
+    <label for="name">Врач:</label>
+    <input type="text" id="doctor" name="doctor" list="doctor_list">
+    <br>
+    <label for="name">День недели</label>
+    <input type="number" id="weekday" name="weekday" min="1" max="7" value="1">
+    <br>
+    <label for="name">Время начала смены:</label>
+    <input id="begin_time" type="time" name="begin_time" value="10:00"/>
+    <label for="name">Время окончания смены:</label>
+    <input id="end_time" type="time" name="end_time" value="18:00"/>
+    <br>
+    <label for="name">Кабинет:</label>
+    <input type="text" id="office" name="office" list="office_list">
+    <input type="submit" value="Сохранить">
+</form>
+<table class="workshifts">
+
+</table>
+</section>
+
+{% endblock %}
+
+{% block pagebodyscripts %}
+<script>
+    document.getElementById("doctor").addEventListener("input", function() {
+        let table = document.querySelector(".workshifts");
+        table.innerHTML = '';
+        let id = parseInt(document.getElementById("doctor").value);
+        if (!isNaN(id)) {
+            fetch("get_workshifts", {"doctor_id": id}, function(data) {
+                for (let item of data) {
+                    let tr = document.createElement("tr");
+                    for (let key of Object.keys(item)) {
+                        let td = document.createElement("td");
+                        td.innerHTML = item[key];
+                        tr.appendChild(td);
+                    }
+                    let td = document.createElement("td");
+                    let button = document.createElement("button");
+                    button.setAttribute("record_id", item["id"]);
+                    button.setAttribute("class", "editBtn");
+                    button.innerHTML = "Удалить";
+                    button.addEventListener("click", function(e) {
+                        let but = e.target;
+                        let id = parseInt(but.getAttribute("record_id"));
+                        fetch("remove_workshift", {"id": id}, function() {
+                            window.location.reload();
+                        }, function() {});
+                    });
+                    td.appendChild(button);
+                    tr.appendChild(td);
+                    table.appendChild(tr);
+                }
+            }, function () {});
+        }
+    });
+
+    $(document).ready(function() {
+    $(window).keydown(function(event){
+        if(event.keyCode == 13) {
+        event.preventDefault();
+        return false;
+        }
+    });
+});
+</script>
+{% endblock %}

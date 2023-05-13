@@ -34,6 +34,7 @@ def doctor_work():
                                 request.form.get("recovery_date") if request.form.get("recovery_date") else "NULL",
                                 int(request.form.get("record_id"))
                                 )
+            #TODO: change medicaments and diseases
         else:
             create_patient_record(
                 request.form.get("symptoms"), 

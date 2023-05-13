@@ -8,7 +8,8 @@ from app.db.queries import get_test_cost, get_current_patient_count, \
     get_avg_recovery_time, get_disease_stats, add_new_disease, get_disease_names, \
     add_new_medicament, get_medicaments, add_doctor_office, get_doctor_offices, \
     get_diseases, add_disease_to_medicament, get_diseases, \
-    get_employees, add_new_employee, edit_employee, get_doctors_full, add_new_doctor
+    get_employees, add_new_employee, edit_employee, get_doctors_full, add_new_doctor, \
+    get_doctors, add_workshift
 
 view = Blueprint('admin', __name__, url_prefix ='/')
 
@@ -34,10 +35,21 @@ def admin():
     return render_template("admin.html")
 
 
-@view.route("/admin_workshifts")
+@view.route("/admin_workshifts", methods=["GET", "POST"])
 @role_required([Role.EMPLOYEE])
 def admin_workshifts():
-    return render_template("admin_workshifts.html")
+    if request.method == "POST":
+        if request.form.get("doctor"):
+            add_workshift(
+                request.form.get("weekday"),
+                request.form.get("begin_time"),
+                request.form.get("end_time"),
+                request.form.get("doctor"),
+                request.form.get("office")
+            )
+    doctors = get_doctors()
+    offices = get_doctor_offices()
+    return render_template("admin_workshifts.html", doctors=doctors, offices=offices)
 
 
 @view.route("/admin_doctors", methods=["POST", "GET"])

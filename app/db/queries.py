@@ -4,7 +4,7 @@ from app.db.connection import create_query, create_commit_query
 
 get_doctors_full = create_query("SELECT * from doctors")
 
-get_doctors = create_query("SELECT name, fio, specialization from doctors")
+get_doctors = create_query("SELECT id, fio, specialization, category from doctors")
 
 get_doctor_by_id = create_query("SELECT * from doctors WHERE id=%s")
 
@@ -340,6 +340,14 @@ add_disease_to_medicament = create_commit_query(
 """
 INSERT INTO diseases_medicaments(disease_id, medicament_name) 
 VALUES (%s, %s)
+"""
+)
+
+get_workshifts = create_query(
+"""
+SELECT doctor_workshifts.id, weekday, begin_time, end_time, polyclinic_number, floor, number FROM doctor_workshifts
+LEFT JOIN doctor_offices ON doctor_workshifts.office_id=doctor_offices.id
+WHERE doctor_id=%s
 """
 )
 
