@@ -2,7 +2,9 @@ from flask import Blueprint, render_template, request
 from app.db.queries import get_doctor_plan, get_doctor_appointments, \
     get_doctor_by_id, get_doctor_patient_history, get_patients, \
     get_diseases, get_medicaments, edit_patient_record, create_patient_record, \
-    create_test, get_last_record_id
+    create_test, get_last_record_id, remove_diseases_for_record, remove_medicaments_for_record, \
+    add_disease_to_record, add_medicament_to_record, get_disease_by_name
+
 from app.utils.login import role_required, get_user, get_logged_in
 from app.utils.enums import Role
 
@@ -26,23 +28,23 @@ def lk():
 @role_required([Role.DOCTOR])
 def doctor_work():
     doctor_id = get_user(get_logged_in())["doctor_id"]
+    patients = get_patients()
+    diseases = get_diseases()
+    medicaments = get_medicaments()
     if request.method == "POST":
         record_id = request.form["record_id"]
         if record_id:
             edit_patient_record(request.form.get("symptoms"), 
                                 request.form.get("treatment_course"),
-                                request.form.get("recovery_date") if request.form.get("recovery_date") else "NULL",
+                                request.form.get("recovery_date") if request.form.get("recovery_date") else None,
                                 int(request.form.get("record_id"))
                                 )
-            #TODO: change medicaments and diseases
         else:
             create_patient_record(
                 request.form.get("symptoms"), 
                 request.form.get("treatment_course"),
                 request.form.get("first_visit"),
                 request.form.get("patient"),
-                request.form.get("medicament"),
-                request.form.get("disease"),
                 doctor_id
             )
             record_id = get_last_record_id(request.form.get("patient"))[0]["last_record_id"]
@@ -53,9 +55,21 @@ def doctor_work():
                 request.form.get("test_cost"),
                 record_id
             )
-    patients = get_patients()
-    diseases = get_diseases()
-    medicaments = get_medicaments()
+        disease_list = request.form.get("diseases", "").split(",")
+        medicament_list = request.form.get("medicaments", "").split(",")
+        remove_diseases_for_record(record_id)
+        remove_medicaments_for_record(record_id)
+        for disease in disease_list:
+            d_id = get_disease_by_name(disease)
+            if len(d_id):
+                d_id = d_id[0]["id"]
+                add_disease_to_record(record_id, d_id)
+        for medicament in medicament_list:
+            add_medicament_to_record(record_id, medicament)
     records = get_doctor_patient_history(doctor_id)
+    for record in records:
+        for key in record:
+            if record[key] is None:
+                record[key] = "-"
     return render_template("doctorfile.html", records=records, 
                            patients=patients, diseases=diseases, medicaments=medicaments)

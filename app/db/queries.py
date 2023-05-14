@@ -195,12 +195,35 @@ create_patient_record = create_commit_query(
 """
 INSERT INTO patient_files(symptoms, treatment_course, first_visit, owner_id)
 VALUES (%s, %s, %s, %s);
-INSERT INTO patient_files_medicaments(patient_file_record_id, medicament_name)
-VALUES ((SELECT currval(pg_get_serial_sequence('patient_files','record_id'))), %s);
-INSERT INTO patient_files_diseases(patient_file_record_id, disease_id)
-VALUES ((SELECT currval(pg_get_serial_sequence('patient_files','record_id'))), %s);
 INSERT INTO doctors_patient_files(patient_file_record_id, doctor_id)
 VALUES ((SELECT currval(pg_get_serial_sequence('patient_files','record_id'))), %s);
+"""
+)
+
+remove_medicaments_for_record = create_commit_query(
+"""
+DELETE FROM patient_files_medicaments WHERE patient_file_record_id=%s
+"""
+)
+
+remove_diseases_for_record = create_commit_query(
+"""
+DELETE FROM patient_files_diseases WHERE patient_file_record_id=%s
+"""
+)
+
+add_medicament_to_record = create_commit_query(
+"""
+INSERT INTO patient_files_medicaments(patient_file_record_id, medicament_name)
+VALUES (%s, %s);
+"""
+)
+
+
+add_disease_to_record = create_commit_query(
+"""
+INSERT INTO patient_files_diseases(patient_file_record_id, disease_id)
+VALUES (%s, %s);
 """
 )
 
