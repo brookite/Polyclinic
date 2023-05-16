@@ -17,14 +17,16 @@
         <p>
           Наши поликлиники
         </p>
+        <div class="blocks">
         {% for polyclinic in polyclinics %}
-        <div class="polyclinic">
-          <p class="number">Поликлиника №{{ polyclinic.get("number") }}</p>
-          <p class="name">{{ polyclinic.get("name") }}</p>
-          <p class="address">{{ polyclinic.get("address") }}</p>
-          <p class="hours">Часы работы: {{ polyclinic.get("opening_hours") }}</p>
-        </div>
+          <div class="block polyclinic">
+            <p class="number">Поликлиника №{{ polyclinic.get("number") }}</p>
+            <p class="name">{{ polyclinic.get("name") }}</p>
+            <p class="address">{{ polyclinic.get("address") }}</p>
+            <p class="hours">Часы работы: {{ polyclinic.get("opening_hours") }}</p>
+          </div>
         {% endfor %}
+      </div>
       </div>
     </div>
   </section>

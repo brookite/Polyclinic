@@ -1,11 +1,14 @@
 {% extends 'main.html' %}
 
 {% block pagebody %}
-<a class="select_menu_item" id="stats" href="/stats">Статистика</a>
-<a class="select_menu_item" id="workshifts" href="/admin_workshifts">Рабочие смены</a>
-<a class="select_menu_item" id="doctors" href="/admin_doctors">Врачи</a>
-<a class="select_menu_item" id="doctors" href="/admin_employees">Сотрудники</a>
-<a class="select_menu_item" id="doctors" href="/admin_medicaments">Лекарства</a>
-<a class="select_menu_item" id="doctors" href="/admin_diseases">Диагнозы</a>
-<a class="select_menu_item" id="doctors" href="/admin_offices">Кабинеты</a>
+<div class="menu_block">
+    <a class="select_menu_item" id="stats" href="/stats">Статистика</a>
+    <a class="select_menu_item" id="workshifts" href="/admin_workshifts">Рабочие смены</a>
+    <a class="select_menu_item" id="doctors" href="/admin_doctors">Врачи</a>
+    <a class="select_menu_item" id="doctors" href="/admin_employees">Сотрудники</a>
+    <a class="select_menu_item" id="doctors" href="/admin_medicaments">Лекарства</a>
+    <a class="select_menu_item" id="doctors" href="/admin_diseases">Диагнозы</a>
+    <a class="select_menu_item" id="doctors" href="/admin_offices">Кабинеты</a>
+    <a class="logout" href="/logout">Выйти из аккаунта</a>
+</div>
 {% endblock %}

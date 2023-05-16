@@ -1,21 +1,25 @@
 {% extends 'main.html' %}
 
 {% block pagebody %}
-<a href="/patient_file">Просмотреть вашу карту пациента</a>
-<div class="main_card">
-    <div>Ваше имя: <p class="large_text">{{ fio }}</p></div>
-    <div>Дата рождения: <p class="large_text">{{ birthdate }}</p></div>
-    <div>Ваш адрес: <p class="large_text">{{ address }}</p></div>
-    <div>Ваш номер телефона: <p class="large_text">{{ phone_number }}</p></div>
-    <div>Ваши записи:</div>
-    <div class="appointments">
-        {% for appointment in appointments %}
-            <div class="appointment">
-                <div class="date"> {{ appointment["datetime"] }} </div>
-                <div class="doctor"> {{ appointment["fio"] }}</div>
-                <div class="office">этаж {{ appointment["floor"] }}, {{ appointment["number"] }}</div>
-            </div>
-        {% endfor %}
+<div class="container_block">
+    <a href="/patient_file">Просмотреть вашу карту пациента</a>
+    <div class="main_card">
+        <div>Ваше имя: <p class="large_text">{{ fio }}</p></div>
+        <div>Дата рождения: <p class="large_text">{{ birthdate }}</p></div>
+        <div>Ваш адрес: <p class="large_text">{{ address }}</p></div>
+        <div>Ваш номер телефона: <p class="large_text">{{ phone_number }}</p></div>
+        <div>Ваши записи:</div>
+        <div class="blocks">
+            {% for appointment in appointments %}
+                <div class="block appointment">
+                    <div class="date"> {{ appointment["datetime"] }} </div>
+                    <div class="doctor"> {{ appointment["fio"] }}</div>
+                    <div class="spec"> {{ appointment["specialization"] }}</div>
+                    <div class="office">этаж {{ appointment["floor"] }}, {{ appointment["number"] }}</div>
+                </div>
+            {% endfor %}
+        </div>
+        <a class="logout" href="/logout">Выйти из аккаунта</a>
     </div>
 </div>
 {% endblock %}

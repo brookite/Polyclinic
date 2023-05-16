@@ -497,7 +497,7 @@ a:focus {
       -ms-flex-align: center;
           align-items: center;
   width: 300px;
-  height: 360px;
+  /* height: 360px;*/
   -webkit-box-pack: justify;
       -ms-flex-pack: justify;
           justify-content: space-between;
