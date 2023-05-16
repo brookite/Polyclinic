@@ -1,30 +1,32 @@
 {% extends 'main.html' %}
 
 {% block pagebody %}
-<form method="POST">
-    {{ form.hidden_tag() }}
-    {{ form.username.label }} {{ form.username() }}
-    <br>
-    {{ form.first_name.label }} {{ form.first_name() }} 
-    {{ form.middle_name.label }} {{ form.middle_name() }}
-    {{ form.last_name.label }} {{ form.last_name() }}  
-    <br>
-    {{ form.email.label }} {{ form.email() }}
-    <br>
-    {{ form.phone_number.label }} {{ form.phone_number() }}
-    <br>
-    {{ form.gender.label }} {{ form.gender() }}
-    <br>
-    {{ form.birthday.label }} {{ form.birthday() }}
-    <br>
-    {{ form.address.label }} {{ form.address() }}
-    <br>
-    {{ form.passport_data.label }} {{ form.passport_data() }}
-    <br>
-    {{ form.password.label }} {{ form.password() }}
-    <br>
-    {{ form.password2.label }} {{ form.password2() }}
-    <br>
-    {{ form.submit() }}
-</form>
+<div class="form_block">
+    <form method="POST">
+        {{ form.hidden_tag() }}
+        {{ form.username.label }} {{ form.username() }}
+        <br>
+        {{ form.first_name.label }} {{ form.first_name() }} 
+        {{ form.middle_name.label }} {{ form.middle_name() }}
+        {{ form.last_name.label }} {{ form.last_name() }}  
+        <br>
+        {{ form.email.label }} {{ form.email() }}
+        <br>
+        {{ form.phone_number.label }} {{ form.phone_number() }}
+        <br>
+        {{ form.gender.label }} {{ form.gender() }}
+        <br>
+        {{ form.birthday.label }} {{ form.birthday() }}
+        <br>
+        {{ form.address.label }} {{ form.address() }}
+        <br>
+        {{ form.passport_data.label }} {{ form.passport_data() }}
+        <br>
+        {{ form.password.label }} {{ form.password() }}
+        <br>
+        {{ form.password2.label }} {{ form.password2() }}
+        <br>
+        {{ form.submit() }}
+    </form>
+</div>
 {% endblock %}

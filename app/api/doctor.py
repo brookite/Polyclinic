@@ -19,7 +19,7 @@ def doctor_work():
             record["recovery_date"] = "в процессе лечения"
 
         if record["test_datetime"]:
-            record["test_datetime"] = record["test_datetime"].strftime("%Y-%m-%d")
+            record["test_datetime"] = record["test_datetime"].strftime("%Y-%m-%d %H:%M:%S")
         else:
             record["test_datetime"] = "-"
         

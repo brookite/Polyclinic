@@ -20,7 +20,6 @@ def remove_doctor_office():
         return missing_arguments(*missing)
 
 
-
 @api_blueprint.route("/get_employees")
 @role_required([Role.EMPLOYEE])
 def get_employees():

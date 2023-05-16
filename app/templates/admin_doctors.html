@@ -15,10 +15,19 @@
     <input type="hidden" name="record_id" id="tag_record" value="">
 </form>
 <table class="doctors">
+    <tr>
+        <th>ФИО</th>
+        <th>Специальность</th>
+        <th>Категория</th>
+        <th>Паспортные данные</th>
+        <th></th>
+    </tr>
     {% for record in records %}
       <tr>
         {% for field in record %}
+        {% if field != "id" %}
         <td>{{ record[field] }}</td>
+        {% endif %}
         {% endfor %}
         <td>
             <button record_id="{{record['id']}}" class="editBtn">Удалить</button>

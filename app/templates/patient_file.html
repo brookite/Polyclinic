@@ -12,13 +12,14 @@
                 <div class="symptoms">{{ record["symptoms"] }}</div>
                 <div class="treatment_course">{{ record["treatment_course"] }}</div>
                 <div class="test">
-                    <div class="test_name">{{ record["test_name"] }}</div>
-                    <div class="datetime">{{ record["test_datetime"] }}</div>
-                    <div class="cost">{{ record["test_cost"] }}</div>
+                    <p>Исследование</p>
+                    <div class="test_name">Название: {{ record["test_name"] }}</div>
+                    <div class="datetime">Дата: {{ record["test_datetime"] }}</div>
+                    <div class="cost">Стоимость: {{ record["test_cost"] }}</div>
                 </div>
-                <div class="disease">{{ record["diseases"] }}</div>
-                <div class="medicines">{{ record["medicines"] }}</div>
-                <div class="date">{{ record["recovery_date"] }}</div>
+                <div class="disease">Диагнозы: {{ record["diseases"] }}</div>
+                <div class="medicines">Лекарства: {{ record["medicines"] }}</div>
+                <div class="recovery_date">Дата выздоровления: {{ record["recovery_date"] }}</div>
                 <a class="reappointment" href="/appointment?doctor_id={{record['doctor_id']}}">Записать к этому доктору вновь</a>
             </div>
         {% endfor %}

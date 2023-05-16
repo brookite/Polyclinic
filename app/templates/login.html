@@ -1,13 +1,19 @@
 {% extends 'main.html' %}
 
 {% block pagebody %}
-<form method="POST">
-    {{ form.hidden_tag() }}
-    {{ form.login.label }} {{ form.login() }}
-    <br>
-    {{ form.password.label }} {{ form.password() }}
-    <br>
-    {{ form.submit() }}
-</form>
-<a href="/register">Регистрация пациента</a>
+<div class="form_block">
+    <form method="POST">
+        {{ form.hidden_tag() }}
+        {{ form.login.label }}
+        <br>
+        {{ form.login() }}
+        <br>
+        {{ form.password.label }}
+        <br>
+        {{ form.password() }}
+        <br>
+        {{ form.submit() }}
+    </form>
+    <a href="/register">Регистрация пациента</a>
+</div>
 {% endblock %}

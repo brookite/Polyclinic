@@ -11,9 +11,12 @@
 }
 
 table {
+    margin: 2px;
     border-collapse: collapse;
     border: 2px solid #10e7f4;
+    word-wrap: break-word;
 }
+
   
 table td {
     border: 2px solid #10e7f4;
@@ -24,10 +27,62 @@ table th {
 }
 
 td {
-    padding: 4px;
+    padding: 2px;
+    max-width: 150px;
 }
 
 .menu_block {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    font-family: 'Roboto', sans-serif;
+    font-size: 21px;
+    margin-left: 20%;
+    margin-top: 15px;
+    margin-bottom: 15px;
+}
+
+.patient_card {
+    display: flex;
+    flex-direction: column;
+}
+
+.card_record {
+    border: 2px solid #022324;
+    width: 500px;
+    margin: 7px;
+}
+
+.card_record > .doctor {
+    font-size: 22px;
+    font-weight: 700;
+}
+
+.card_record > .specialization {
+    font-size: 20px;
+    font-weight: 600;
+}
+
+.card_record > .date {
+    font-size: 18px;
+    font-weight: 500;
+    margin-bottom: 10px;
+}
+
+#medicaments {
+    width: 300px;
+}
+
+#diseases {
+    width: 300px;
+}
+
+#form {
+    padding: 10px;
+    margin-left: 30px;
+}
+
+.form_block {
     display: flex;
     flex-direction: column;
     justify-content: center;

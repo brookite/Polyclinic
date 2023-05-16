@@ -18,10 +18,21 @@
     <input type="hidden" name="record_id" id="tag_record" value="">
 </form>
 <table class="employees">
+    <tr>
+        <th>ФИО</th>
+        <th>Дата рождения</th>
+        <th>Адрес регистрации</th>
+        <th>Дата устройства на работу</th>
+        <th>Паспортные данные</th>
+        <th>Должность</th>
+        <th></th>
+    </tr>
     {% for record in records %}
       <tr>
         {% for field in record %}
+        {% if field != "id" %}
         <td>{{ record[field] }}</td>
+        {% endif %}
         {% endfor %}
         <td>
             <button record_id="{{record['id']}}" class="editBtn">Ред.</button>

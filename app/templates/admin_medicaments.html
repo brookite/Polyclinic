@@ -7,14 +7,16 @@
     {% endfor %}
 </datalist>
 <section class="health_section layout_padding">
-<form action="/admin_medicaments" method="post">
+<form action="/admin_medicaments" method="post" id="form">
     <label for="name">Название:</label>
     <input type="text" id="name" name="name">
     <br>
     <label for="contraindications">Противопоказания:</label>
+    <br>
     <textarea id="contraindications" class="text" cols="86" rows="5" name="contraindications"></textarea>
     <br>
     <label for="indications">Показания к применению:</label>
+    <br>
     <textarea id="indications" class="text" cols="86" rows ="5" name="indications"></textarea>
     <br>
     <label for="disease">Номер диагноза:</label>
@@ -23,6 +25,11 @@
     <input type="submit" value="Сохранить">
 </form>
 <table class="medicaments">
+    <tr>
+      <th>Название</th>
+      <th>Показания к применению</th>
+      <th>Противопоказания</th>
+    </tr>
     {% for record in records %}
       <tr>
         {% for field in record %}

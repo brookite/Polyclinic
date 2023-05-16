@@ -25,37 +25,62 @@
     <label for="recovery_date">Дата выздоровления:</label>
     <input type="date" id="recovery_date" name="recovery_date">
     <br>
-    <textarea id="symptoms" class="text" cols="86" rows ="5" name="symptoms">Симптомы:</textarea>
-    <textarea id="treatment_course" class="text" cols="86" rows ="5" name="treatment_course">Курс лечения:</textarea>
+    <label for="symptoms">Симптомы:</label>
+    <br>
+    <textarea id="symptoms" class="text" cols="86" rows ="5" name="symptoms"></textarea>
+    <br>
+    <label for="treatment_course">Курс лечения:</label>
+    <br>
+    <textarea id="treatment_course" class="text" cols="86" rows ="5" name="treatment_course"></textarea>
     <br>
     <label for="medicament">Лекарство:</label>
     <input type="text" id="medicament"list="medicament_list">
     <button class="addMedicament">+</button>
     <button class="removeMedicament">-</button>
-    <select id="medicaments" multiple>
+    <br>
+    <select id="medicaments" multiple></select>
+    <br>
 
-    </select>
     <label for="disease">Диагноз:</label>
     <input type="text" id="disease" list="disease_list">
     <button class="addDisease">+</button>
     <button class="removeDisease">-</button>
-    <select id="diseases" multiple>
+    <br>
+    <select id="diseases" multiple></select>
+    <br> 
 
-    </select>
     <label for="test_name">Название обследования:</label>
     <input type="text" id="test_name" name="test_name">
+    <br>
     <label for="test_datetime">Дата обследования:</label>
     <input type="datetime-local" id="test_datetime" name="test_datetime">
+    <br>
     <label for="test_cost">Стоимость обследования:</label>
-    <input type="number" id="test_cost" name="test_cost" min="0" value="0">
+    <input type="number" id="test_cost" step="0.01" name="test_cost" min="0" value="0">
+    <br>
     <input type="submit" value="Сохранить запись">
     <input type="hidden" name="record_id" id="tag_record" value="">
 </form>
 <table class="patients">
+    <tr>
+        <th>ФИО</th>
+        <th>Номер телефона</th>
+        <th>Назначенные лекарства</th>
+        <th>Диагноз</th>
+        <th>Симптомы</th>
+        <th>Курс лечения</th>
+        <th>Дата первого посещения</th>
+        <th>Дата выздоровления</th>
+        <th>Обследование</th>
+        <th>Дата обследования</th>
+        <th></th>
+    </th>
     {% for record in records %}
       <tr>
         {% for field in record %}
+        {% if field not in ['record_id', 'owner_id'] %}
         <td>{{ record[field] }}</td>
+        {% endif %}
         {% endfor %}
         <td>
             <button record_id="{{record['record_id']}}" class="editBtn">Ред.</button>

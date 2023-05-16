@@ -11,9 +11,16 @@
     <br>
     <label for="name">Номер поликлиники:</label>
     <input type="number" id="number" name="number">
+    <br>
     <input type="submit" value="Сохранить">
 </form>
 <table class="offices">
+    <tr>
+        <th>Этаж</th>
+        <th>Кабинет</th>
+        <th>Поликлиника</th>
+        <th></th>
+    </tr>
     {% for record in records %}
       <tr>
         {% for field in record %}

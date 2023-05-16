@@ -71,5 +71,7 @@ def doctor_work():
         for key in record:
             if record[key] is None:
                 record[key] = "-"
+        if not isinstance(record["test_datetime"], str):
+            record["test_datetime"] = record["test_datetime"].strftime("%d.%m.%Y %H:%M:%S")
     return render_template("doctorfile.html", records=records, 
                            patients=patients, diseases=diseases, medicaments=medicaments)

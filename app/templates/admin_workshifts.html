@@ -12,7 +12,7 @@
     {% endfor %}
 </datalist>
 <section class="health_section layout_padding">
-<form action="/admin_workshifts" method="post">
+<form action="/admin_workshifts" method="post" id="form">
     <label for="name">Врач:</label>
     <input type="text" id="doctor" name="doctor" list="doctor_list">
     <br>
@@ -39,16 +39,27 @@
 <script>
     document.getElementById("doctor").addEventListener("input", function() {
         let table = document.querySelector(".workshifts");
-        table.innerHTML = '';
+        table.innerHTML = `<tr>
+            <th>Начало смены</th>
+            <th>Конец смены</th>
+            <th>Этаж</th>
+            <th>Кабинет</th>
+            <th>Номер поликлиники</th>
+            <th>День недели</th>
+            <th></th>
+        </tr>`
+        ;
         let id = parseInt(document.getElementById("doctor").value);
         if (!isNaN(id)) {
             fetch("get_workshifts", {"doctor_id": id}, function(data) {
                 for (let item of data) {
                     let tr = document.createElement("tr");
                     for (let key of Object.keys(item)) {
-                        let td = document.createElement("td");
-                        td.innerHTML = item[key];
-                        tr.appendChild(td);
+                        if (key != "id") {
+                            let td = document.createElement("td");
+                            td.innerHTML = item[key];
+                            tr.appendChild(td);
+                        }
                     }
                     let td = document.createElement("td");
                     let button = document.createElement("button");

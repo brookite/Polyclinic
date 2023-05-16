@@ -159,8 +159,19 @@ SELECT record_id, p.fio, p.phone_number, STRING_AGG (
     ) diseases, 
 	symptoms, treatment_course, 
 	record_id, patient_files.owner_id, 
-	first_visit, recovery_date, pt.name AS test_name, 
-	pt.datetime AS test_datetime
+	first_visit, recovery_date, 
+    STRING_AGG (
+	pt.name,
+        ', '
+       ORDER BY
+        pt.name
+    ) test_name,
+	STRING_AGG (
+	to_char (pt.datetime, 'YYYY-MM-DD HH24:MI:SS'),
+        ', '
+       ORDER BY
+        pt.datetime
+    ) test_datetime
 FROM patient_files 
 LEFT JOIN patient_tests pt
 ON patient_files.record_id=pt.file_id
@@ -177,7 +188,7 @@ LEFT JOIN doctors doc
 ON dpf.doctor_id=doc.id
 WHERE doc.id=%s
 GROUP BY record_id, p.fio, p.phone_number, symptoms, treatment_course, first_visit, 
-recovery_date, test_name, patient_files.owner_id, test_datetime;
+recovery_date, patient_files.owner_id;
 """
 )
 
