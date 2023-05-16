@@ -99,7 +99,8 @@ SELECT * from doctor_appointments
 JOIN doctor_workshifts ON doctor_appointments.workshift_id=doctor_workshifts.id
 JOIN doctors ON doctor_workshifts.doctor_id=doctors.id
 JOIN doctor_offices ON doctor_workshifts.office_id=doctor_offices.id
-WHERE patient_id=%s;
+WHERE patient_id=%s
+ORDER BY datetime;
 """
 )
 
@@ -335,7 +336,8 @@ INSERT INTO doctor_offices (number, floor, polyclinic_number) VALUES (%s, %s, %s
 
 remove_doctor_office = create_commit_query(
 """
-DELETE FROM doctor_offices WHERE id=%s
+DELETE FROM doctor_workshifts WHERE office_id=%s;
+DELETE FROM doctor_offices WHERE id=%s;
 """
 )
 

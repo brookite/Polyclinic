@@ -32,7 +32,6 @@ def userhome():
             role_names.append("admin")
         if Role.DOCTOR in roles:
             role_names.append("doctor")
-        print(role_names)
         return render_template("userhome.html", roles=role_names)
     elif len(roles) == 1:
         if Role.PATIENT in roles:

@@ -1,6 +1,7 @@
 {% extends 'main.html' %}
 
 {% block pagebody %}
+<a href="/admin">< Назад</a>
 <datalist id="disease_list">
     {% for disease in diseases %}
     <option value="{{disease['id']}}">{{ disease["name"] }}</option>

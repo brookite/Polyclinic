@@ -135,7 +135,7 @@
                 }
             });
         }
-    }, function() {});
+    }, function() {viewFlashMessage("Возникла ошибка при выполнении операции")});
     document.querySelector(".cancelEdit").addEventListener("click", function() {
         document.querySelector("#tag_record").setAttribute("value", "");
         document.querySelector(".cancelEdit").style = "display: none";

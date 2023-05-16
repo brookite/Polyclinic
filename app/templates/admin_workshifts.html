@@ -11,20 +11,21 @@
     <option value="{{office['id']}}"> поликлиника {{ office["polyclinic_number"] }}, этаж {{ office["floor"] }}, кабинеь {{ office["number"] }}</option>
     {% endfor %}
 </datalist>
+<a href="/admin">< Назад</a>
 <section class="health_section layout_padding">
 <form action="/admin_workshifts" method="post" id="form">
-    <label for="name">Врач:</label>
+    <label for="doctor">Врач:</label>
     <input type="text" id="doctor" name="doctor" list="doctor_list">
     <br>
-    <label for="name">День недели</label>
+    <label for="weekday">День недели</label>
     <input type="number" id="weekday" name="weekday" min="1" max="7" value="1">
     <br>
-    <label for="name">Время начала смены:</label>
+    <label for="begin_time">Время начала смены:</label>
     <input id="begin_time" type="time" name="begin_time" value="10:00"/>
-    <label for="name">Время окончания смены:</label>
+    <label for="end_time">Время окончания смены:</label>
     <input id="end_time" type="time" name="end_time" value="18:00"/>
     <br>
-    <label for="name">Кабинет:</label>
+    <label for="office">Кабинет:</label>
     <input type="text" id="office" name="office" list="office_list">
     <input type="submit" value="Сохранить">
 </form>

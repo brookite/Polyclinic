@@ -1,6 +1,7 @@
 {% extends 'main.html' %}
 
 {% block pagebody %}
+<a href="/admin">< Назад</a>
 <form action="/admin_doctors" method="post">
     <label for="name">ФИО: </label>
     <input type="text" id="fio" name="fio">
@@ -53,9 +54,9 @@
             let id = parseInt(but.getAttribute("record_id"));
             fetch("remove_doctor", {"id": id}, function() {
                 window.location.reload();
-            }, function() {});
+            }, function() {viewFlashMessage("Возникла ошибка при выполнении операции")});
             });
         }
-    }, function() {});
+    }, function() {viewFlashMessage("Возникла ошибка при выполнении операции")});
 </script>
 {% endblock %}

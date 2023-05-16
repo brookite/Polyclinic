@@ -1,6 +1,7 @@
 {% extends 'main.html' %}
 
 {% block pagebody %}
+<a href="/admin">< Назад</a>
 <section class="health_section layout_padding">
 <form action="/admin_offices" method="post">
     <label for="name">Номер этажа:</label>
@@ -47,7 +48,7 @@
             let id = parseInt(but.getAttribute("record_id"));
             fetch("remove_doctor_office", {"office_id": id}, function() {
                 window.location.reload();
-            }, function() {});
+            }, function() {viewFlashMessage("Возникла ошибка при выполнении операции")});
         });
     }
 </script>

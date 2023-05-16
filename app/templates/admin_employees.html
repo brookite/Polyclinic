@@ -1,6 +1,7 @@
 {% extends 'main.html' %}
 
 {% block pagebody %}
+<a href="/admin">< Назад</a>
 <button class="cancelEdit" style="display: none;">Отменить редактирование</button>
 <form action="/admin_employees" method="post">
     <label for="name">ФИО: </label>
@@ -69,7 +70,7 @@
                 }
             });
         }
-    }, function() {});
+    }, function() {viewFlashMessage("Возникла ошибка при выполнении операции")});
     document.querySelector(".cancelEdit").addEventListener("click", function() {
         document.querySelector("#tag_record").setAttribute("value", "");
         document.querySelector(".cancelEdit").style = "display: none";
