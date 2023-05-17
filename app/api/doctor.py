@@ -18,7 +18,7 @@ def doctor_work():
         else:
             record["recovery_date"] = "в процессе лечения"
 
-        if record["test_datetime"]:
+        if record["test_datetime"] and not isinstance(record["test_datetime"], str):
             record["test_datetime"] = record["test_datetime"].strftime("%Y-%m-%d %H:%M:%S")
         else:
             record["test_datetime"] = "-"

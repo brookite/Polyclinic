@@ -8,7 +8,7 @@
 </datalist>
 <datalist id="office_list">
     {% for office in offices %}
-    <option value="{{office['id']}}"> поликлиника {{ office["polyclinic_number"] }}, этаж {{ office["floor"] }}, кабинеь {{ office["number"] }}</option>
+    <option value="{{office['id']}}"> поликлиника {{ office["polyclinic_number"] }}, этаж {{ office["floor"] }}, кабинет {{ office["number"] }}</option>
     {% endfor %}
 </datalist>
 <a href="/admin">< Назад</a>
@@ -70,9 +70,9 @@
                     button.addEventListener("click", function(e) {
                         let but = e.target;
                         let id = parseInt(but.getAttribute("record_id"));
-                        fetch("remove_workshift", {"id": id}, function() {
-                            window.location.reload();
-                        }, function() {});
+                        apiPost("remove_workshift", {"id": id}, function() {
+                            window.location.href = window.location.href;
+                        }, function() {viewFlashMessage("Возникла ошибка при выполнении операции")});
                     });
                     td.appendChild(button);
                     tr.appendChild(td);

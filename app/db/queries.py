@@ -53,13 +53,13 @@ WHERE datetime=%s AND workshift_id=%s
 
 get_patient_history = create_query(
 """
-SELECT STRING_AGG (
+SELECT STRING_AGG (DISTINCT
 	pfm.medicament_name,
         ','
        ORDER BY
         pfm.medicament_name
     ) medicines, 
- 	STRING_AGG (
+ 	STRING_AGG (DISTINCT
 	d.name,
         ','
        ORDER BY
@@ -67,9 +67,18 @@ SELECT STRING_AGG (
     ) diseases, 
 	symptoms, treatment_course, 
 	record_id,
-	first_visit, recovery_date, pt.name AS test_name, 
+	first_visit, recovery_date,
+	STRING_AGG (DISTINCT 
+	pt.name,
+        ', '
+       ORDER BY
+        pt.name
+    ) test_name,
 	pt.cost AS test_cost,
-	pt.datetime AS test_datetime,
+	STRING_AGG (
+	DISTINCT to_char (pt.datetime, 'YYYY-MM-DD HH24:MI:SS'),
+        ', '
+    ) test_datetime,
 	doc.id AS doctor_id,
 	doc.fio AS doctor_fio,
 	doc.specialization AS doctor_specialization
@@ -88,7 +97,7 @@ LEFT JOIN doctors doc
 ON dpf.doctor_id=doc.id
 WHERE owner_id=%s
 GROUP BY record_id, symptoms, treatment_course, first_visit, 
-recovery_date, test_name, doc.id, test_cost, test_datetime, 
+recovery_date, doc.id, test_cost, 
 doctor_fio, doctor_specialization;
 """
 )
@@ -146,13 +155,13 @@ SELECT name, id from diseases WHERE name=%s;
 
 get_doctor_patient_history = create_query(
 """
-SELECT record_id, p.fio, p.phone_number, STRING_AGG (
+SELECT record_id, p.fio, p.phone_number, STRING_AGG (DISTINCT 
 	pfm.medicament_name,
         ','
        ORDER BY
         pfm.medicament_name
     ) medicines, 
- 	STRING_AGG (
+ 	STRING_AGG (DISTINCT 
 	d.name,
         ','
        ORDER BY
@@ -161,17 +170,15 @@ SELECT record_id, p.fio, p.phone_number, STRING_AGG (
 	symptoms, treatment_course, 
 	record_id, patient_files.owner_id, 
 	first_visit, recovery_date, 
-    STRING_AGG (
+    STRING_AGG (DISTINCT 
 	pt.name,
         ', '
        ORDER BY
         pt.name
     ) test_name,
 	STRING_AGG (
-	to_char (pt.datetime, 'YYYY-MM-DD HH24:MI:SS'),
+	DISTINCT to_char (pt.datetime, 'YYYY-MM-DD HH24:MI:SS'),
         ', '
-       ORDER BY
-        pt.datetime
     ) test_datetime
 FROM patient_files 
 LEFT JOIN patient_tests pt

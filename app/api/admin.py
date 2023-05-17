@@ -10,10 +10,10 @@ from app.db.queries import remove_doctor_office as db_remove_doctor_office, \
 from flask import jsonify, request
 
 
-@api_blueprint.route("/remove_doctor_office")
+@api_blueprint.route("/remove_doctor_office", methods=["POST"])
 @role_required([Role.EMPLOYEE])
 def remove_doctor_office():
-    args, missing = require_arguments(request.args, "office_id")
+    args, missing = require_arguments(request.form, "office_id")
     if not missing:
         return jsonify(db_remove_doctor_office(args["office_id"], args["office_id"]))
     else:
@@ -37,10 +37,10 @@ def get_doctors_full():
     return jsonify(doctors)
 
 
-@api_blueprint.route("/remove_doctor")
+@api_blueprint.route("/remove_doctor", methods=["POST"])
 @role_required([Role.EMPLOYEE])
 def remove_doctor():
-    args, missing = require_arguments(request.args, "id")
+    args, missing = require_arguments(request.form, "id")
     if not missing:
         return jsonify(db_remove_doctor(*[args["id"] for i in range(5)]))
     else:
@@ -61,11 +61,12 @@ def get_workshifts():
         return missing_arguments(*missing)
 
 
-@api_blueprint.route("/remove_workshift")
+@api_blueprint.route("/remove_workshift", methods=["POST"])
 @role_required([Role.EMPLOYEE])
 def remove_workshift():
-    args, missing = require_arguments(request.args, "id")
+    args, missing = require_arguments(request.form, "id")
     if not missing:
-        return jsonify(db_remove_workshift(args["id"]))
+        result = db_remove_workshift(args["id"])
+        return jsonify(result)
     else:
         return missing_arguments(*missing)

@@ -46,8 +46,8 @@
         item.addEventListener("click", function(e) {
             let but = e.target;
             let id = parseInt(but.getAttribute("record_id"));
-            fetch("remove_doctor_office", {"office_id": id}, function() {
-                window.location.reload();
+            apiPost("remove_doctor_office", {"office_id": id}, function() {
+                window.location.href = window.location.href;
             }, function() {viewFlashMessage("Возникла ошибка при выполнении операции")});
         });
     }

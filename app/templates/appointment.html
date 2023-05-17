@@ -250,7 +250,7 @@ document.querySelector(".submit_appointment").addEventListener("click",
       apiPost("create_appointment", {"workshift_id": workshift_id, "datetime": timestamp}, function(data) {
         if (data == 1) {
           viewFlashMessage("Запись успешно создана");
-          window.location.reload();
+          window.location.href = window.location.href;
         } else {
           viewFlashMessage("Не удалось записаться на данное время");
         }

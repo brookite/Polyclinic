@@ -37,7 +37,6 @@ def patient_file():
     records = get_patient_history(patient["id"])
     for record in records:
         record["first_visit"] = record["first_visit"].strftime("%d.%m.%Y")
-        record["test_datetime"] = record["test_datetime"].strftime("%d.%m.%Y %H:%M:%S")
         if record["recovery_date"]:
             record["recovery_date"] = record["recovery_date"].strftime("%d.%m.%Y")
         else:

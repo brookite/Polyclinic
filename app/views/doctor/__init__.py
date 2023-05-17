@@ -51,7 +51,7 @@ def doctor_work():
         if request.form.get("test_name"):
             create_test(
                 request.form.get("test_name"),
-                request.form.get("test_datetime"),
+                request.form.get("test_datetime") if request.form.get("test_datetime") != "-" else None,
                 request.form.get("test_cost"),
                 record_id
             )
