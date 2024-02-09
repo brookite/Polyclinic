@@ -1,11 +1,16 @@
 import psycopg2
 import psycopg2.extras
 import traceback
+import os
 
 
 def connect_db():
-    conn = psycopg2.connect(dbname='Polyclinic', user='postgres', 
-                        password='12345', host='localhost')
+    conn = psycopg2.connect(
+        dbname=os.getenv("POLYCLINIC_DB_NAME"),
+        user=os.getenv("POLYCLINIC_DB_USER"),
+        password=os.getenv("POLYCLINIC_DB_PASSWORD"),
+        host=os.getenv("POLYCLINIC_DB_HOST"),
+    )
     cursor = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
     return conn, cursor
 
@@ -25,6 +30,7 @@ def create_query(query, max_count=None):
             result = [dict(ans) for ans in cursor.fetchall()]
         close_db(db, cursor)
         return result
+
     return wrapper
 
 
@@ -40,4 +46,5 @@ def create_commit_query(query):
             result = False
         close_db(db, cursor)
         return result
+
     return wrapper

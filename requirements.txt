@@ -3,3 +3,4 @@ psycopg2
 werkzeug
 Flask-WTF
 phonenumbers
+python-dotenv
